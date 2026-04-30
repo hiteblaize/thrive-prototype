@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../fontawesome.css">
+<script src="../fa-icons.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<style>body{margin:0;padding:18px;background:#F4F0EB;font-family:"Circular Std",sans-serif;color:#142E0F}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.04em}
+.lbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.5;margin-bottom:6px}
+</style></head><body>
+<div id="root"></div>
+<script>
+const {Icon}=window;
+const C=({children})=>React.createElement("span",{className:"chip",...arguments[0]},children);
+const dot=c=>React.createElement("span",{style:{width:6,height:6,borderRadius:99,background:c}});
+ReactDOM.createRoot(document.getElementById("root")).render(
+  React.createElement("div",null,
+    React.createElement("div",{className:"lbl"},"Patient status chips"),
+    React.createElement("div",{className:"grid"},
+      React.createElement("span",{className:"chip",style:{background:"rgba(52,206,0,.14)",color:"#1F7A00"}},dot("#34CE00"),"In range · HR 112"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(166,0,0,.12)",color:"#A60000"}},dot("#A60000"),"Flagged · HR 128"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(255,172,5,.15)",color:"#8C5A00"}},dot("#FFAC05"),"Below zone"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(20,46,15,.08)"}},dot("rgba(20,46,15,.5)"),"Idle · mic muted"),
+      React.createElement("span",{className:"chip",style:{background:"#D8E73C",color:"#142E0F"}},React.createElement(Icon,{name:"bolt",size:10}),"CARDY"),
+      React.createElement("span",{className:"chip",style:{background:"#C7B9FF",color:"#142E0F"}},"CEP: KM"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(251,110,40,.15)",color:"#8B2E00"}},React.createElement(Icon,{name:"hand",size:10}),"Hand raised"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(54,122,221,.14)",color:"#2158A8"}},React.createElement(Icon,{name:"phone",size:10}),"In waiting room"),
+      React.createElement("span",{className:"chip",style:{background:"rgba(20,46,15,.08)"}},React.createElement(Icon,{name:"calendar-check",size:10}),"Checked in"),
+    )
+  )
+);
+</script></body></html>

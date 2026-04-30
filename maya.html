@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Coach Maya</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-16:        rgba(20,46,15,0.16);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  padding: 0 28px 8px; flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+.app-header {
+  background: var(--c-dark-green);
+  padding: 14px 20px 16px;
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 12px;
+}
+.back-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; text-decoration: none;
+}
+.back-btn svg { width: 18px; height: 18px; }
+.header-avatar {
+  width: 40px; height: 40px; border-radius: 13px;
+  background: rgba(251,110,40,0.15);
+  border: 1.5px solid rgba(251,110,40,0.30);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--c-dark-green);
+}
+.header-name { font-family: var(--font-display); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; color: var(--c-white); line-height: 1; margin-bottom: 3px; }
+.header-role { font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: rgba(255,255,255,0.45); }
+
+.chat-scroll {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 0;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.chat-scroll::-webkit-scrollbar { display: none; }
+
+.chat-date {
+  text-align: center;
+  font-family: var(--font-sans); font-weight: 400; font-size: 11px;
+  letter-spacing: 0.04em; color: var(--c-dg-30); text-transform: uppercase; margin: 4px 0;
+}
+
+.msg-coach { display: flex; align-items: flex-end; gap: 8px; max-width: 88%; align-self: flex-start; }
+.msg-coach-avatar {
+  width: 28px; height: 28px; border-radius: 9px;
+  background: rgba(251,110,40,0.15); border: 1px solid rgba(251,110,40,0.30);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-bottom: 2px;
+  font-family: var(--font-sans); font-weight: 700; font-size: 10px; color: var(--c-dark-green);
+}
+.msg-coach-bubble { background: var(--c-white); border-radius: 18px 18px 18px 4px; padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+.msg-coach-text { font-family: var(--font-sans); font-weight: 400; font-size: 14px; line-height: 1.55; color: var(--c-dark-green); }
+.msg-time { font-family: var(--font-sans); font-weight: 400; font-size: 10px; color: var(--c-dg-30); margin-top: 4px; padding-left: 2px; }
+
+.msg-user { align-self: flex-end; max-width: 80%; }
+.msg-user-bubble { background: var(--c-dark-green); border-radius: 18px 18px 4px 18px; padding: 12px 14px; }
+.msg-user-text { font-family: var(--font-sans); font-weight: 400; font-size: 14px; line-height: 1.55; color: var(--c-white); }
+.msg-user .msg-time { text-align: right; }
+
+.suggested-wrap {
+  padding: 10px 16px 20px;
+  display: flex; gap: 8px; overflow-x: auto;
+  scrollbar-width: none; flex-shrink: 0; flex-wrap: wrap;
+}
+.suggested-wrap::-webkit-scrollbar { display: none; }
+.suggest-chip {
+  display: inline-flex; align-items: center;
+  background: var(--c-white); border: 1.5px solid var(--c-dg-08);
+  border-radius: 9999px; padding: 8px 16px;
+  font-family: var(--font-sans); font-weight: 600; font-size: 13px;
+  color: var(--c-dark-green); white-space: nowrap; cursor: pointer;
+  transition: background 120ms, border-color 120ms, transform 80ms; flex-shrink: 0;
+}
+.suggest-chip:hover { background: var(--c-natural); border-color: var(--c-dg-16); }
+.suggest-chip:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 0 0 0-4z"/></svg>
+    </div>
+  </div>
+
+  <div class="app-header">
+    <a href="chat.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="header-avatar">MC</div>
+    <div>
+      <div class="header-name">Coach Maya</div>
+      <div class="header-role">Lifestyle Coach</div>
+    </div>
+  </div>
+
+  <div class="chat-scroll" id="chat-scroll">
+    <div class="chat-date">Yesterday · Day 13</div>
+
+    <div class="msg-coach">
+      <div class="msg-coach-avatar">MC</div>
+      <div>
+        <div class="msg-coach-bubble">
+          <div class="msg-coach-text">Really strong session today, Bexli. The way you slowed down and noticed your hunger cues during the mindful eating exercise — that's exactly the work.</div>
+        </div>
+        <div class="msg-time">4:10 PM</div>
+      </div>
+    </div>
+
+    <div class="msg-coach">
+      <div class="msg-coach-avatar">MC</div>
+      <div>
+        <div class="msg-coach-bubble">
+          <div class="msg-coach-text">Great session yesterday. See you at 3pm today 🌿</div>
+        </div>
+        <div class="msg-time">9:05 AM</div>
+      </div>
+    </div>
+
+    <div class="chat-date" style="margin-top:8px;">Today · Day 14</div>
+
+    <div class="msg-coach">
+      <div class="msg-coach-avatar">MC</div>
+      <div>
+        <div class="msg-coach-bubble">
+          <div class="msg-coach-text">Today we're continuing the stress-eating thread — you mentioned that work stress was the main trigger last week. I want to give you a few concrete tools before we get into the session.</div>
+        </div>
+        <div class="msg-time">9:41 AM</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="suggested-wrap" id="chip-row">
+    <div class="suggest-chip" data-key="ready">I'll be there at 3pm</div>
+    <div class="suggest-chip" data-key="stress">The stress is still high</div>
+    <div class="suggest-chip" data-key="whatToExpect">What are we covering?</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const responses = {
+    ready: {
+      user: "I'll be there at 3pm",
+      coach: `Perfect. Come with an open mind — today's session is more reflection than instruction. No prep needed.\n\nSee you at 3.`,
+      next: ['whatToExpect', 'backToChat'],
+    },
+    stress: {
+      user: "The stress is still high honestly",
+      coach: `That's useful to know going in. We'll spend more time today on the pause-before-eating practice — it only takes about 90 seconds but it interrupts the stress-eating cycle before it starts.\n\nThe goal isn't to eliminate stress. It's to create a small gap between the trigger and the response. That gap is everything.`,
+      next: ['ready', 'whatToExpect', 'backToChat'],
+    },
+    whatToExpect: {
+      user: "What are we covering today?",
+      coach: `Three things:\n\n<strong>1. The pause practice</strong> — a 90-second check-in before eating that breaks the automatic response.\n\n<strong>2. Identifying your top two stress triggers</strong> — so we can build specific responses for each.\n\n<strong>3. A simple wind-down routine</strong> for evenings when food noise is high.\n\nAbout 60 minutes total.`,
+      next: ['ready', 'backToChat'],
+    },
+    backToChat: {
+      user: "Thanks Maya",
+      coach: `See you at 3. 🌿`,
+      next: [],
+      link: 'chat.html',
+    },
+  };
+
+  const scroll  = document.getElementById('chat-scroll');
+  const chipRow = document.getElementById('chip-row');
+  const now     = '9:41 AM';
+
+  function coachAvatar() {
+    return `<div class="msg-coach-avatar">MC</div>`;
+  }
+
+  function appendUser(text) {
+    const el = document.createElement('div');
+    el.className = 'msg-user';
+    el.innerHTML = `<div class="msg-user-bubble"><div class="msg-user-text">${text}</div></div><div class="msg-time" style="text-align:right;">${now}</div>`;
+    scroll.appendChild(el);
+  }
+
+  function appendCoach(html) {
+    const el = document.createElement('div');
+    el.className = 'msg-coach';
+    const formatted = html.replace(/\n/g, '<br>');
+    el.innerHTML = `${coachAvatar()}<div><div class="msg-coach-bubble"><div class="msg-coach-text">${formatted}</div></div><div class="msg-time">${now}</div></div>`;
+    scroll.appendChild(el);
+  }
+
+  function setChips(keys) {
+    chipRow.innerHTML = '';
+    if (!keys || keys.length === 0) { chipRow.style.display = 'none'; return; }
+    chipRow.style.display = 'flex';
+    keys.forEach(k => {
+      if (!responses[k]) return;
+      const chip = document.createElement('div');
+      chip.className = 'suggest-chip';
+      chip.dataset.key = k;
+      chip.textContent = responses[k].user;
+      chipRow.appendChild(chip);
+    });
+  }
+
+  function scrollBottom() { scroll.scrollTop = scroll.scrollHeight; }
+
+  chipRow.addEventListener('click', (e) => {
+    const chip = e.target.closest('.suggest-chip');
+    if (!chip) return;
+    const key = chip.dataset.key;
+    const r = responses[key];
+    if (!r) return;
+    appendUser(r.user);
+    setChips([]);
+    scrollBottom();
+    setTimeout(() => {
+      appendCoach(r.coach);
+      if (r.link) {
+        scrollBottom();
+        setTimeout(() => { window.location.href = r.link; }, 1200);
+      } else {
+        setChips(r.next);
+        scrollBottom();
+      }
+    }, 400);
+  });
+})();
+</script>
+
+</body>
+</html>

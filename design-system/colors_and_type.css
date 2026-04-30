@@ -1,0 +1,227 @@
+/* ============================================================
+   Carda Health — Color & Type Foundations
+   Source of truth for tokens used across decks, UI kits, mocks.
+   ============================================================ */
+
+/* ---------- Webfonts (local) ---------- */
+@font-face {
+  font-family: "Circular Std";
+  src: url("fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("fonts/CircularStd-BookItalic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ----------------------------------------------------------
+     PRIMARY COLOR
+     The brand lives at #142E0F (dark green) + #D8E73C (lime).
+     Lime never appears alone — always on dark green.
+     ---------------------------------------------------------- */
+  --c-dark-green:        #142E0F;   /* primary fg / brand surface */
+  --c-lime:              #D8E73C;   /* primary CTA */
+  --c-citrus:            #FB6E28;   /* accent / urgency */
+  --c-plum:              #C7B9FF;   /* accent / education */
+  --c-sky:               #97DDF7;   /* accent / wellness */
+  --c-natural:           #F4F0EB;   /* warm neutral surface */
+
+  /* Tints of dark green (used as quiet borders / fills) */
+  --c-dg-08:             rgba(20, 46, 15, 0.08);
+  --c-dg-30:             rgba(20, 46, 15, 0.30);
+  --c-dg-40:             rgba(20, 46, 15, 0.40);
+  --c-dg-60:             rgba(20, 46, 15, 0.60);
+
+  /* Neutrals */
+  --c-white:             #FFFFFF;
+  --c-off-white:         #FEFEFE;
+  --c-bg-page:           #FFFFFF;
+  --c-bg-soft:           #F4F0EB;   /* same as natural */
+  --c-bg-quiet:          #ECEEEC;   /* dark-green @ 8% on white */
+  --c-stroke-soft:       #E1DEDB;
+  --c-stroke-quiet:      var(--c-dg-08);
+
+  /* Semantic */
+  --c-fg:                #142E0F;
+  --c-fg-muted:          rgba(20, 46, 15, 0.60);
+  --c-fg-on-dark:        #FFFFFF;
+  --c-error:             #A60000;
+  --c-success:           #34CE00;
+  --c-warning:           #FFAC05;
+  --c-info:              #367ADD;
+  --c-hr-high:           #FB6E28;   /* heart-rate high */
+  --c-hr-low:            #97DDF7;
+  --c-target:            #4DCAAC;
+
+  /* ----------------------------------------------------------
+     TYPE — base families
+     Display: ABC Marist (semibold). Tight, slightly editorial.
+     Body / UI: Circular Std (book/medium/bold).
+     Numbers / large vital readouts: Circular Std (book), tightened.
+     ---------------------------------------------------------- */
+  --font-display: "ABC Marist", "Fraunces", Georgia, serif;
+  --font-sans:    "Circular Std", "CircularXX", -apple-system,
+                  BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    "Source Code Pro", ui-monospace, SFMono-Regular,
+                  Menlo, monospace;
+
+  /* ----------------------------------------------------------
+     SCALE — taken from the Figma type system
+     ---------------------------------------------------------- */
+  --t-h1-size:   72px;  --t-h1-lh: 1;     --t-h1-tracking: -0.02em;
+  --t-h2-size:   48px;  --t-h2-lh: 1;     --t-h2-tracking: -0.015em;
+  --t-h3-size:   32px;  --t-h3-lh: 1;     --t-h3-tracking: -0.01em;
+  --t-h4-size:   22px;  --t-h4-lh: 1;     --t-h4-tracking: -0.01em;
+
+  --t-p1-size:   22px;  --t-p1-lh: 34px;  --t-p1-tracking: 0.01em;
+  --t-p2-size:   19px;  --t-p2-lh: 32px;  --t-p2-tracking: 0.015em;
+  --t-p25-size:  18px;  --t-p25-lh: 28px;
+  --t-p3-size:   16px;  --t-p3-lh: 28px;  --t-p3-tracking: 0.01em;
+
+  --t-caption-size:        16px; --t-caption-lh: 20px;
+  --t-caption-sm-size:     14px; --t-caption-sm-lh: 20px;
+  --t-caption-xs-size:     12px; --t-caption-xs-lh: 16px;
+
+  --t-btn-large:           16px; /* Bold, +0.02em */
+  --t-btn-xl:              21px; /* Bold, +0.02em */
+
+  /* ----------------------------------------------------------
+     SPACING — 4-pt base, common multiples
+     ---------------------------------------------------------- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-14: 56px;
+  --sp-18: 72px;
+
+  /* ----------------------------------------------------------
+     RADII — Carda likes a generous 32px on cards, 39px on
+     pill buttons (so they fully round at the standard 80px tall).
+     ---------------------------------------------------------- */
+  --r-xs:    2px;
+  --r-sm:    6px;
+  --r-md:    12px;
+  --r-lg:    32px;
+  --r-pill:  9999px;
+
+  /* ----------------------------------------------------------
+     SHADOWS — deliberately quiet. The brand prefers tinted
+     surfaces and outlines over shadows.
+     ---------------------------------------------------------- */
+  --sh-card:   0 4px 8px rgba(0, 0, 0, 0.12);
+  --sh-pop:    0 12px 32px rgba(0, 0, 0, 0.19);
+  --sh-soft:   0 2px 6px rgba(0, 0, 0, 0.07);
+
+  /* Motion */
+  --ease-out:  cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:  140ms;
+  --dur-base:  240ms;
+  --dur-slow:  420ms;
+}
+
+/* ============================================================
+   SEMANTIC BASE
+   Apply by adding the class — or copy the rules into your sheet.
+   ============================================================ */
+
+html, body {
+  background: var(--c-bg-page);
+  color: var(--c-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.t-h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-h1-size);
+  line-height: var(--t-h1-lh);
+  letter-spacing: var(--t-h1-tracking);
+  color: var(--c-fg);
+}
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-h2-size);
+  line-height: var(--t-h2-lh);
+  letter-spacing: var(--t-h2-tracking);
+}
+.t-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--t-h3-size);
+  line-height: var(--t-h3-lh);
+  letter-spacing: var(--t-h3-tracking);
+}
+.t-h4 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--t-h4-size);
+  line-height: var(--t-h4-lh);
+  letter-spacing: var(--t-h4-tracking);
+}
+
+/* Display variant — use Circular Std (Black) at large sizes
+   when the moment calls for chunkier mass than ABC Marist. */
+.t-display-circular {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 100px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.t-p1 { font-size: var(--t-p1-size); line-height: var(--t-p1-lh); letter-spacing: var(--t-p1-tracking); }
+.t-p2 { font-size: var(--t-p2-size); line-height: var(--t-p2-lh); letter-spacing: var(--t-p2-tracking); }
+.t-p3 { font-size: var(--t-p3-size); line-height: var(--t-p3-lh); letter-spacing: var(--t-p3-tracking); }
+
+.t-caption    { font-size: var(--t-caption-size);    line-height: var(--t-caption-lh); }
+.t-caption-sm { font-size: var(--t-caption-sm-size); line-height: var(--t-caption-sm-lh); }
+.t-caption-xs { font-size: var(--t-caption-xs-size); line-height: var(--t-caption-xs-lh); }
+
+.t-btn-l  { font-weight: 700; font-size: var(--t-btn-large); letter-spacing: 0.02em; }
+.t-btn-xl { font-weight: 700; font-size: var(--t-btn-xl);    letter-spacing: 0.02em; }
+
+/* Below 390px, h1 collapses to h2 size — explicit rule from system */
+@media (max-width: 390px) {
+  .t-h1 { font-size: var(--t-h2-size); letter-spacing: var(--t-h2-tracking); }
+}

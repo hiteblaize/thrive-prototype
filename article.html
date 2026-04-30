@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Today's Read</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green: #142E0F;
+  --c-lime:       #D8E73C;
+  --c-citrus:     #FB6E28;
+  --c-plum:       #C7B9FF;
+  --c-sky:        #97DDF7;
+  --c-natural:    #F4F0EB;
+  --c-dg-08:      rgba(20,46,15,0.08);
+  --c-dg-16:      rgba(20,46,15,0.16);
+  --c-dg-30:      rgba(20,46,15,0.30);
+  --c-dg-60:      rgba(20,46,15,0.60);
+  --c-white:      #FFFFFF;
+  --font-display: "ABC Marist", Georgia, serif;
+  --font-sans:    "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+/* Header */
+.app-header {
+  background: var(--c-dark-green);
+  padding: 12px 20px 20px;
+  flex-shrink: 0;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  opacity: 0.7;
+}
+.back-btn-text {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--c-white);
+}
+.header-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.topic-tag {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(216,231,60,0.15);
+  border: 1px solid rgba(216,231,60,0.25);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-lime);
+}
+.read-time-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.03em;
+}
+.article-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--c-white);
+}
+
+/* Article body scroll */
+.article-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0;
+}
+.article-scroll::-webkit-scrollbar { display: none; }
+
+.article-body {
+  padding: 24px 22px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Prose */
+.prose p {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--c-dark-green);
+}
+.prose p + p { margin-top: 12px; }
+.prose strong { font-weight: 700; }
+
+.section-heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--c-dark-green);
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+/* Three-Part Plan cards */
+.plan-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.plan-card {
+  background: var(--c-white);
+  border-radius: 20px;
+  border: 1px solid var(--c-dg-08);
+  padding: 16px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.plan-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--c-lime);
+}
+.plan-card-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-dark-green);
+  margin-bottom: 5px;
+  letter-spacing: -0.005em;
+}
+.plan-card-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-dg-60);
+}
+.plan-card-body strong { font-weight: 700; color: var(--c-dark-green); }
+
+/* Key takeaways */
+.takeaway-list {
+  background: var(--c-white);
+  border-radius: 20px;
+  border: 1px solid var(--c-dg-08);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.takeaway-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-dg-30);
+  margin-bottom: 2px;
+}
+.takeaway-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.takeaway-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-lime);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.takeaway-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-dark-green);
+}
+.takeaway-text strong { font-weight: 700; }
+
+/* Microstep card */
+.microstep-card {
+  background: rgba(216,231,60,0.10);
+  border: 1.5px solid rgba(216,231,60,0.30);
+  border-radius: 20px;
+  padding: 18px 18px;
+}
+.microstep-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3a4a0a;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.microstep-eyebrow-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-lime);
+}
+.microstep-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.25;
+  color: var(--c-dark-green);
+  margin-bottom: 6px;
+}
+.microstep-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--c-dg-60);
+}
+
+/* Completion area */
+.completion-area {
+  padding: 0 22px 36px;
+  flex-shrink: 0;
+}
+.mark-read-btn {
+  width: 100%;
+  background: var(--c-dark-green);
+  color: var(--c-white);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  border: none;
+  border-radius: 9999px;
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 140ms;
+}
+.mark-read-btn:hover { opacity: 0.85; }
+
+/* Rating modal (shown after mark as read) */
+.rating-area {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.rating-area.visible { display: flex; }
+.rating-prompt {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-dark-green);
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+.rating-sub {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--c-dg-60);
+  text-align: center;
+  margin-top: -6px;
+}
+.rating-btns {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.rating-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  padding: 14px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  border: 1.5px solid var(--c-dg-16);
+  background: var(--c-white);
+  color: var(--c-dark-green);
+  cursor: pointer;
+  transition: all 140ms;
+}
+.rating-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.rating-btn.helpful:hover {
+  background: rgba(216,231,60,0.12);
+  border-color: rgba(216,231,60,0.5);
+  color: #3a4a0a;
+}
+.rating-btn.notforme:hover {
+  background: rgba(20,46,15,0.06);
+  border-color: var(--c-dg-30);
+}
+.done-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+}
+.done-state.visible { display: flex; }
+.done-check {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--c-lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.done-check svg { width: 22px; height: 22px; }
+.done-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-dark-green);
+}
+.done-sub {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--c-dg-60);
+  text-align: center;
+}
+.back-home-btn {
+  text-decoration: none;
+  background: var(--c-dark-green);
+  color: var(--c-white);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 9999px;
+  padding: 13px 32px;
+  display: inline-block;
+  margin-top: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 0 0 0-4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-nav">
+      <a href="preview.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        <span class="back-btn-text">Today's Playlist</span>
+      </a>
+      <span style="font-family:var(--font-sans); font-weight:400; font-size:12px; color:rgba(255,255,255,0.4);">Apr 29 · Day 14</span>
+    </div>
+    <div class="header-tag-row">
+      <span class="topic-tag">Your Program</span>
+      <span class="read-time-tag">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        4 min read
+      </span>
+    </div>
+    <div class="article-title">Why Your Habits Today Outlast the Medication</div>
+  </div>
+
+  <!-- Article content -->
+  <div class="article-scroll">
+    <div class="article-body">
+
+      <!-- Intro -->
+      <div class="prose">
+        <p>Most people who stop GLP-1 medications gain most of the weight back within a year. Not because they failed. Because they stopped without the right foundation underneath them.</p>
+        <p>Carda was built to change that outcome. What you are doing right now — on Day 14 — is the beginning of that foundation.</p>
+      </div>
+
+      <!-- 18 month plan -->
+      <div>
+        <div class="section-heading">An 18-month plan, not just a prescription</div>
+        <div class="prose">
+          <p>Carda is a structured three-phase program that runs alongside your medication — and continues long after it stops. Each phase has a specific job. And the habits you build in Phase 1 determine how well Phases 2 and 3 go.</p>
+        </div>
+      </div>
+
+      <!-- Three phases -->
+      <div>
+        <div class="section-heading">Your three phases</div>
+        <div class="plan-cards">
+          <div class="plan-card">
+            <div class="plan-number">1</div>
+            <div>
+              <div class="plan-card-title">Protect while you lose — now</div>
+              <div class="plan-card-body">Your GLP-1 is suppressing appetite and accelerating fat loss. The risk is that without resistance training and protein, <strong>up to 40% of what you lose can be muscle, not fat.</strong> Phase 1 makes sure the weight coming off is the right kind.</div>
+            </div>
+          </div>
+          <div class="plan-card">
+            <div class="plan-number">2</div>
+            <div>
+              <div class="plan-card-title">Stop the medication safely — 9 weeks</div>
+              <div class="plan-card-body">When you reach your goal weight, most programs just stop the drug. We don't. Over 9 weeks we taper your dose to zero while increasing coaching and exercise. <strong>Your hunger returns as the drug fades — we are there for exactly that moment.</strong></div>
+            </div>
+          </div>
+          <div class="plan-card">
+            <div class="plan-number">3</div>
+            <div>
+              <div class="plan-card-title">Stay there — 12 months</div>
+              <div class="plan-card-body">Off the medication, the habits take over. Daily movement, ongoing strength training, and group support replace the drug's appetite effect. <strong>This is where the program pays off</strong> — not as a pill you take, but as a body that manages itself.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Where you are now -->
+      <div>
+        <div class="section-heading">Where you are right now</div>
+        <div class="prose">
+          <p>Day 14. Two weeks into Phase 1. The check-ins, protein goals, and sessions with Coach Haley are not busywork. They are the exact inputs that determine whether Phase 2 goes smoothly and whether Phase 3 sticks.</p>
+          <p>Nothing you do today is small. <strong>It is foundation.</strong></p>
+        </div>
+      </div>
+
+      <!-- Key takeaways -->
+      <div class="takeaway-list">
+        <div class="takeaway-label">Key takeaways</div>
+        <div class="takeaway-item">
+          <div class="takeaway-dot"></div>
+          <div class="takeaway-text">Most patients regain weight after stopping GLP-1s — <strong>Carda's three phases prevent that</strong></div>
+        </div>
+        <div class="takeaway-item">
+          <div class="takeaway-dot"></div>
+          <div class="takeaway-text">Phase 1 protects muscle while the medication works</div>
+        </div>
+        <div class="takeaway-item">
+          <div class="takeaway-dot"></div>
+          <div class="takeaway-text">Phase 2 tapers the drug over 9 weeks — not a sudden stop</div>
+        </div>
+        <div class="takeaway-item">
+          <div class="takeaway-dot"></div>
+          <div class="takeaway-text"><strong>The habits you build now are what make stopping possible</strong></div>
+        </div>
+      </div>
+
+      <!-- Microstep -->
+      <div class="microstep-card">
+        <div class="microstep-eyebrow">
+          <div class="microstep-eyebrow-dot"></div>
+          Today's Microstep
+        </div>
+        <div class="microstep-title">Write down one thing that feels easier than two weeks ago</div>
+        <div class="microstep-body">After your session today, take 60 seconds. One thing — carrying groceries, climbing stairs, getting up from a chair. That is your evidence. That is the fire staying lit.</div>
+      </div>
+
+    </div><!-- /article-body -->
+  </div><!-- /article-scroll -->
+
+  <!-- Completion area -->
+  <div class="completion-area">
+
+    <!-- Step 1: Mark as read button -->
+    <button class="mark-read-btn" id="markReadBtn" onclick="showRating()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      Mark as read
+    </button>
+
+    <!-- Step 2: Rating prompt -->
+    <div class="rating-area" id="ratingArea">
+      <div class="rating-prompt">Was this helpful?</div>
+      <div class="rating-sub">Your feedback shapes future articles.</div>
+      <div class="rating-btns">
+        <button class="rating-btn helpful" onclick="showDone('helpful')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          Helpful
+        </button>
+        <button class="rating-btn notforme" onclick="showDone('notforme')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+          Not for me
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Done state -->
+    <div class="done-state" id="doneState">
+      <div class="done-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div class="done-text">Article complete</div>
+      <div class="done-sub" id="doneSub">Added to your Thrive progress.</div>
+      <a href="preview.html" class="back-home-btn">Back to playlist</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function showRating() {
+  document.getElementById('markReadBtn').style.display = 'none';
+  document.getElementById('ratingArea').classList.add('visible');
+}
+function showDone(choice) {
+  document.getElementById('ratingArea').classList.remove('visible');
+  const done = document.getElementById('doneState');
+  done.classList.add('visible');
+  if (choice === 'helpful') {
+    document.getElementById('doneSub').textContent = "Glad it helped. Cardi will keep this in mind.";
+  } else {
+    document.getElementById('doneSub').textContent = "Noted — we'll adjust what we send you next time.";
+  }
+  localStorage.setItem('carda_article', JSON.stringify({ read: true, rating: choice, readAt: new Date().toISOString() }));
+}
+</script>
+
+</body>
+</html>

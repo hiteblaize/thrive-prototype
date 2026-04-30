@@ -1,0 +1,4 @@
+design-system/fonts/
+node_modules/
+exports/
+.DS_Store

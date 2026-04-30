@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Morning Check-In</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --c-error:        #A60000;
+  --c-success:      #34CE00;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #e8e4df;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-white);
+  letter-spacing: -0.01em;
+}
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+/* Header */
+.app-header {
+  background: var(--c-dark-green);
+  padding: 16px 24px 24px;
+  flex-shrink: 0;
+}
+.back-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+  cursor: pointer;
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+.back-row:hover { opacity: 0.9; }
+.back-label {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+}
+.header-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-lime);
+  margin-bottom: 6px;
+  transition: opacity 200ms;
+}
+.header-greeting {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--c-white);
+  margin-bottom: 6px;
+  transition: opacity 200ms;
+}
+.header-sub {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255,255,255,0.50);
+  margin-bottom: 18px;
+  transition: opacity 200ms;
+}
+
+/* Progress steps */
+.steps-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.step-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.15);
+  transition: background 300ms var(--ease-out);
+}
+.step-bar.done { background: var(--c-lime); }
+.step-bar.active { background: rgba(216,231,60,0.5); }
+
+/* Scroll area */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 100px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* Step containers */
+.step {
+  padding: 20px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: stepIn 220ms var(--ease-out);
+}
+.step.hidden { display: none; }
+
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards */
+.card {
+  background: var(--c-white);
+  border-radius: 28px;
+  border: 1px solid var(--c-dg-08);
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.card-header-band {
+  padding: 14px 20px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.card-header-band.sky    { background: var(--c-sky); }
+.card-header-band.natural { background: var(--c-natural); border-bottom: 1px solid var(--c-dg-08); }
+.band-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(20,46,15,0.10);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.band-icon svg { width: 16px; height: 16px; }
+.band-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.005em;
+  color: var(--c-dark-green);
+}
+.card-body { padding: 16px 20px 20px; }
+
+/* Vitals grid */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.vital-tile {
+  background: var(--c-natural);
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--c-dg-08);
+}
+.vital-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-dg-30);
+  margin-bottom: 6px;
+}
+.vital-value {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  color: var(--c-dark-green);
+  line-height: 1;
+}
+.vital-unit {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-dg-60);
+  margin-left: 2px;
+}
+.vital-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+.vital-status.ok { background: rgba(52,206,0,0.12); color: #1e7a00; }
+.vital-status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.vitals-note {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-dg-30);
+  text-align: center;
+  padding: 4px 0 2px;
+}
+
+/* Nausea scale */
+.nausea-question {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--c-dg-60);
+  margin-bottom: 4px;
+}
+.nausea-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.nausea-label { font-size: 11px; color: var(--c-dg-30); }
+.nausea-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.nausea-pip {
+  height: 52px;
+  border-radius: 12px;
+  background: var(--c-dg-08);
+  border: 1.5px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--c-dg-30);
+  cursor: pointer;
+  transition: background 150ms, color 150ms, border-color 150ms, transform 80ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.nausea-pip:active { transform: scale(0.93); }
+.nausea-pip.selected {
+  background: var(--c-citrus);
+  color: white;
+  border-color: transparent;
+}
+.nausea-pip.filled-low {
+  background: rgba(151,221,247,0.30);
+  color: var(--c-dark-green);
+}
+.nausea-pip.filled-mid {
+  background: rgba(199,185,255,0.35);
+  color: var(--c-dark-green);
+}
+.nausea-pip.filled-high {
+  background: rgba(251,110,40,0.18);
+  color: #7a3000;
+}
+
+/* Nausea response */
+.nausea-response {
+  background: var(--c-natural);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-dark-green);
+  line-height: 1.4;
+  margin-top: 4px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+  pointer-events: none;
+}
+.nausea-response.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* GI symptom chips */
+.symptom-prompt {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--c-dg-60);
+  margin-bottom: 12px;
+}
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 15px;
+  border-radius: 9999px;
+  background: var(--c-natural);
+  border: 1.5px solid var(--c-dg-08);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--c-dg-60);
+  cursor: pointer;
+  transition: background 140ms, border-color 140ms, color 140ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.chip.selected {
+  background: rgba(20,46,15,0.07);
+  border-color: var(--c-dark-green);
+  color: var(--c-dark-green);
+}
+.chip.selected-citrus {
+  background: rgba(251,110,40,0.10);
+  border-color: rgba(251,110,40,0.45);
+  color: #7a3000;
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: var(--c-dg-08);
+  margin: 4px 0;
+}
+
+/* Appetite / food restriction question */
+.restriction-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+.restriction-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  background: var(--c-natural);
+  border-radius: 14px;
+  border: 1.5px solid var(--c-dg-08);
+  cursor: pointer;
+  transition: background 140ms, border-color 140ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.restriction-option.selected {
+  background: rgba(20,46,15,0.06);
+  border-color: var(--c-dark-green);
+}
+.restriction-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--c-dg-30);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 140ms, background 140ms;
+}
+.restriction-radio.checked {
+  border-color: var(--c-dark-green);
+  background: var(--c-dark-green);
+}
+.restriction-radio.checked::after {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c-lime);
+}
+.restriction-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-dark-green);
+}
+
+/* Completion cards */
+.completion-positive {
+  background: rgba(52,206,0,0.07);
+  border: 1.5px solid rgba(52,206,0,0.18);
+  border-radius: 24px;
+  padding: 20px 20px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.completion-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.completion-icon.green { background: rgba(52,206,0,0.14); }
+.completion-icon.orange { background: rgba(251,110,40,0.12); }
+.completion-icon.red { background: rgba(166,0,0,0.10); }
+.completion-icon svg { width: 20px; height: 20px; }
+.completion-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-dark-green);
+  margin-bottom: 4px;
+}
+.completion-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--c-dg-60);
+}
+
+.safety-card {
+  background: rgba(166,0,0,0.05);
+  border: 1.5px solid rgba(166,0,0,0.20);
+  border-radius: 24px;
+  padding: 20px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.safety-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-error);
+  margin-bottom: 4px;
+}
+.safety-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(166,0,0,0.75);
+}
+.safety-cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--c-error);
+  gap: 4px;
+  text-decoration: none;
+  border: 1.5px solid rgba(166,0,0,0.25);
+  border-radius: 9999px;
+  padding: 7px 14px;
+}
+
+.log-summary {
+  background: var(--c-white);
+  border-radius: 20px;
+  border: 1px solid var(--c-dg-08);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.log-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.log-icon {
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: var(--c-natural);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.log-icon svg { width: 15px; height: 15px; }
+.log-key {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-dg-30);
+}
+.log-val {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-dark-green);
+}
+
+/* Cardi nudge */
+.cardi-nudge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(199,185,255,0.12);
+  border: 1px solid rgba(199,185,255,0.30);
+  border-radius: 20px;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* CTA */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: var(--c-lime);
+  color: var(--c-dark-green);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 9999px;
+  padding: 18px 24px;
+  cursor: pointer;
+  transition: transform 100ms, box-shadow 140ms var(--ease-out), opacity 200ms;
+}
+.btn-primary:hover { box-shadow: var(--sh-card); }
+.btn-primary:active { transform: scale(0.97); box-shadow: none; }
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; flex: 1; padding-top: 8px; cursor: pointer; opacity: 0.35;
+}
+.nav-item.active { opacity: 1; }
+.nav-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.nav-dot {
+  position: absolute; bottom: -3px;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--c-lime);
+}
+.nav-label {
+  font-family: var(--font-sans);
+  font-weight: 500; font-size: 10px;
+  letter-spacing: 0.02em; color: var(--c-white);
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">7:14 AM</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        <path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 0 0 0-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <button class="back-row" onclick="goBack()" aria-label="Back">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span class="back-label" id="back-label">Home</span>
+    </button>
+    <div class="header-eyebrow" id="header-eyebrow">Morning Check-In · Step 1 of 4</div>
+    <div class="header-greeting" id="header-greeting">Your vitals look good</div>
+    <div class="header-sub" id="header-sub">Synced overnight · Day 14, Phase 1</div>
+    <div class="steps-row">
+      <div class="step-bar active" id="bar-1"></div>
+      <div class="step-bar" id="bar-2"></div>
+      <div class="step-bar" id="bar-3"></div>
+      <div class="step-bar" id="bar-4"></div>
+    </div>
+  </div>
+
+  <!-- Scroll area -->
+  <div class="scroll-area" id="scroll-area">
+
+    <!-- ── STEP 1: Vitals ── -->
+    <div class="step" id="step-1">
+
+      <div class="card">
+        <div class="card-header-band sky">
+          <div class="band-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <span class="band-title">Vitals from your devices</span>
+        </div>
+        <div class="card-body">
+          <div class="vitals-grid">
+            <div class="vital-tile">
+              <div class="vital-label">Blood Pressure</div>
+              <div class="vital-value">118<span class="vital-unit">/76</span></div>
+              <div class="vital-status ok"><div class="vital-status-dot"></div>Normal</div>
+            </div>
+            <div class="vital-tile">
+              <div class="vital-label">SpO2</div>
+              <div class="vital-value">97<span class="vital-unit">%</span></div>
+              <div class="vital-status ok"><div class="vital-status-dot"></div>Normal</div>
+            </div>
+            <div class="vital-tile">
+              <div class="vital-label">Resting HR</div>
+              <div class="vital-value">72<span class="vital-unit">bpm</span></div>
+              <div class="vital-status ok"><div class="vital-status-dot"></div>Normal</div>
+            </div>
+            <div class="vital-tile">
+              <div class="vital-label">Weight</div>
+              <div class="vital-value">186<span class="vital-unit">lbs</span></div>
+              <div class="vital-status ok" style="gap:3px;">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><polyline points="1 7 4 4 6 6 9 2" stroke="#1e7a00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                −0.4 lbs
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <button class="btn-primary" onclick="goToStep(2)">Looks good — continue</button>
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ── STEP 2: Nausea ── -->
+    <div class="step hidden" id="step-2">
+
+      <div class="card">
+        <div class="card-header-band natural">
+          <div class="band-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5"/>
+              <line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5"/>
+            </svg>
+          </div>
+          <span class="band-title">Rate your nausea</span>
+        </div>
+        <div class="card-body">
+          <p class="symptom-prompt" style="margin-bottom:14px;">How strong is your nausea right now?</p>
+          <div class="nausea-labels">
+            <span class="nausea-label">None</span>
+            <span class="nausea-label">Severe</span>
+          </div>
+          <div class="nausea-grid" id="nausea-grid">
+            <button class="nausea-pip" onclick="selectNausea(1)">1</button>
+            <button class="nausea-pip" onclick="selectNausea(2)">2</button>
+            <button class="nausea-pip" onclick="selectNausea(3)">3</button>
+            <button class="nausea-pip" onclick="selectNausea(4)">4</button>
+            <button class="nausea-pip" onclick="selectNausea(5)">5</button>
+            <button class="nausea-pip" onclick="selectNausea(6)">6</button>
+            <button class="nausea-pip" onclick="selectNausea(7)">7</button>
+            <button class="nausea-pip" onclick="selectNausea(8)">8</button>
+            <button class="nausea-pip" onclick="selectNausea(9)">9</button>
+            <button class="nausea-pip" onclick="selectNausea(10)">10</button>
+          </div>
+          <div class="nausea-response" id="nausea-response"></div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="step2-next" disabled onclick="goToStep(3)">Next</button>
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ── STEP 3: Symptoms + Appetite ── -->
+    <div class="step hidden" id="step-3">
+
+      <div class="card">
+        <div class="card-header-band natural">
+          <div class="band-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+              <path d="M8 15h8M9 9h.01M15 9h.01"/>
+            </svg>
+          </div>
+          <span class="band-title">Any other symptoms?</span>
+        </div>
+        <div class="card-body">
+          <p class="symptom-prompt">Tap all that apply.</p>
+          <div class="chip-row" id="symptom-chips">
+            <div class="chip" onclick="toggleChip(this)">Nausea</div>
+            <div class="chip" onclick="toggleChip(this)">Low appetite</div>
+            <div class="chip" onclick="toggleChip(this)">Fatigue</div>
+            <div class="chip" onclick="toggleChip(this)">Constipation</div>
+            <div class="chip" onclick="toggleChip(this)">Headache</div>
+            <div class="chip" onclick="toggleChip(this)">Heartburn</div>
+            <div class="chip" onclick="toggleChip(this)">Brain fog</div>
+            <div class="chip" onclick="toggleChip(this)">Feeling good ✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header-band natural">
+          <div class="band-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+              <line x1="6" y1="1" x2="6" y2="4"/>
+              <line x1="10" y1="1" x2="10" y2="4"/>
+              <line x1="14" y1="1" x2="14" y2="4"/>
+            </svg>
+          </div>
+          <span class="band-title">How much did you eat yesterday?</span>
+        </div>
+        <div class="card-body">
+          <p class="symptom-prompt" style="margin-bottom:12px;">Be honest — this helps us keep you safe.</p>
+          <div class="restriction-row" id="appetite-options">
+            <div class="restriction-option" onclick="selectAppetite(this, 'well')">
+              <div class="restriction-radio"></div>
+              <span class="restriction-text">Ate well — close to my protein floor</span>
+            </div>
+            <div class="restriction-option" onclick="selectAppetite(this, 'less')">
+              <div class="restriction-radio"></div>
+              <span class="restriction-text">Ate less than usual — appetite was low</span>
+            </div>
+            <div class="restriction-option" onclick="selectAppetite(this, 'barely')">
+              <div class="restriction-radio"></div>
+              <span class="restriction-text">Barely ate — had almost no appetite</span>
+            </div>
+            <div class="restriction-option" onclick="selectAppetite(this, 'skipped')">
+              <div class="restriction-radio"></div>
+              <span class="restriction-text">Skipped most meals</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="goToStep(4)">Next</button>
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ── STEP 4: Completion ── -->
+    <div class="step hidden" id="step-4">
+      <div id="completion-dynamic"><!-- filled by renderCompletion() --></div>
+      <button class="btn-primary" id="done-btn" onclick="saveThenDone()">Done</button>
+      <div style="height:8px;"></div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <div class="nav-item active" role="button" tabindex="0">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9,22 9,12 15,12 15,22" fill="#142E0F" stroke="none"/>
+        </svg>
+        <div class="nav-dot"></div>
+      </div>
+      <span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" role="button" tabindex="0">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <span class="nav-label">Progress</span>
+    </div>
+    <a href="coach.html" class="nav-item" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <span class="nav-label">Cardi</span>
+    </a>
+  </nav>
+
+</div>
+
+<script>
+let currentStep = 1;
+let nauseaScore = 0;
+let appetiteChoice = '';
+
+const stepMeta = {
+  1: { eyebrow: 'Morning Check-In · Step 1 of 4', title: 'Your vitals look good', sub: 'Synced overnight · Day 14, Phase 1', back: 'Home' },
+  2: { eyebrow: 'Morning Check-In · Step 2 of 4', title: 'How\'s your nausea?', sub: 'Tap a number — 1 is none, 10 is severe', back: 'Back' },
+  3: { eyebrow: 'Morning Check-In · Step 3 of 4', title: 'Any other symptoms?', sub: 'Tap all that apply, then rate your appetite', back: 'Back' },
+  4: { eyebrow: 'Morning Check-In · Complete', title: 'Check-in logged', sub: 'Here\'s what we recorded for today', back: 'Back' },
+};
+
+const nauseaMessages = {
+  1:  'No nausea — great way to start the day.',
+  2:  'Barely there. You\'re in good shape.',
+  3:  'A little noticeable. Manageable.',
+  4:  'Mild nausea. We\'ll keep an eye on this.',
+  5:  'Moderate — noted. Let\'s watch your meals today.',
+  6:  'Noticeable nausea. We\'re tracking this carefully.',
+  7:  'Significant. Your care team will be informed.',
+  8:  'That\'s meaningful — we\'re flagging this.',
+  9:  'High nausea. Your care team will follow up.',
+  10: 'Severe — we\'re alerting your care team now.',
+};
+
+function goToStep(n) {
+  document.getElementById('step-' + currentStep).classList.add('hidden');
+  currentStep = n;
+  const el = document.getElementById('step-' + n);
+  el.classList.remove('hidden');
+
+  const meta = stepMeta[n];
+  document.getElementById('header-eyebrow').textContent = meta.eyebrow;
+  document.getElementById('header-greeting').textContent = meta.title;
+  document.getElementById('header-sub').textContent = meta.sub;
+  document.getElementById('back-label').textContent = meta.back;
+
+  for (let i = 1; i <= 4; i++) {
+    const bar = document.getElementById('bar-' + i);
+    bar.className = 'step-bar';
+    if (i < n) bar.classList.add('done');
+    else if (i === n) bar.classList.add('active');
+  }
+
+  document.getElementById('scroll-area').scrollTop = 0;
+
+  if (n === 4) renderCompletion();
+}
+
+function goBack() {
+  if (currentStep === 1) {
+    window.location.href = 'preview.html';
+  } else {
+    goToStep(currentStep - 1);
+  }
+}
+
+function selectNausea(n) {
+  nauseaScore = n;
+  const pips = document.querySelectorAll('.nausea-pip');
+  pips.forEach((pip, i) => {
+    pip.className = 'nausea-pip';
+    const num = i + 1;
+    if (num < n) {
+      if (num <= 3) pip.classList.add('filled-low');
+      else if (num <= 6) pip.classList.add('filled-mid');
+      else pip.classList.add('filled-high');
+    } else if (num === n) {
+      pip.classList.add('selected');
+    }
+  });
+
+  const resp = document.getElementById('nausea-response');
+  resp.textContent = nauseaMessages[n] || '';
+  resp.classList.add('visible');
+
+  document.getElementById('step2-next').disabled = false;
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function saveThenDone() {
+  const chips = document.querySelectorAll('#symptom-chips .chip.selected');
+  const symptoms = Array.from(chips).map(c => c.textContent.replace(' ✓',''));
+  const concerningSymptoms = symptoms.filter(s => s !== 'Feeling good');
+  const badAppetite = ['barely', 'skipped'].includes(appetiteChoice);
+  const mehAppetite = appetiteChoice === 'less';
+  const manySymptoms = concerningSymptoms.length >= 3;
+  const someSymptoms = concerningSymptoms.length >= 1;
+
+  let severity;
+  if (nauseaScore >= 7 || (nauseaScore >= 5 && badAppetite)) {
+    severity = 'high';
+  } else if (nauseaScore >= 4 || badAppetite || manySymptoms) {
+    severity = 'moderate';
+  } else if ((nauseaScore >= 2 && someSymptoms) || mehAppetite) {
+    severity = 'watch';
+  } else {
+    severity = 'good';
+  }
+
+  localStorage.setItem('carda_checkin', JSON.stringify({
+    nauseaScore,
+    appetiteChoice,
+    symptoms,
+    severity,
+    completedAt: new Date().toISOString()
+  }));
+  window.location.href = 'preview.html';
+}
+
+function selectAppetite(el, value) {
+  appetiteChoice = value;
+  document.querySelectorAll('#appetite-options .restriction-option').forEach(o => {
+    o.classList.remove('selected');
+    o.querySelector('.restriction-radio').classList.remove('checked');
+  });
+  el.classList.add('selected');
+  el.querySelector('.restriction-radio').classList.add('checked');
+}
+
+function renderCompletion() {
+  const area = document.getElementById('completion-dynamic');
+
+  // Gather selected symptoms
+  const chips = document.querySelectorAll('#symptom-chips .chip.selected');
+  const symptoms = Array.from(chips).map(c => c.textContent.replace(' ✓',''));
+  const feelingGood = symptoms.includes('Feeling good');
+  const concerningSymptoms = symptoms.filter(s => s !== 'Feeling good');
+  const sympText = symptoms.length > 0 ? symptoms.join(', ') : 'None reported';
+
+  const appetiteLabels = {
+    '': 'Not answered',
+    'well': 'Ate well',
+    'less': 'Ate less than usual',
+    'barely': 'Barely ate',
+    'skipped': 'Skipped most meals',
+  };
+
+  // Score severity: nausea, appetite, symptom count each contribute
+  const badAppetite = ['barely', 'skipped'].includes(appetiteChoice);
+  const mehAppetite = appetiteChoice === 'less';
+  const manySymptoms = concerningSymptoms.length >= 3;
+  const someSymptoms = concerningSymptoms.length >= 1;
+
+  let severity;
+  if (nauseaScore >= 7 || (nauseaScore >= 5 && badAppetite)) {
+    severity = 'high';
+  } else if (nauseaScore >= 4 || badAppetite || manySymptoms) {
+    severity = 'moderate';
+  } else if ((nauseaScore >= 2 && someSymptoms) || mehAppetite) {
+    severity = 'watch';
+  } else {
+    severity = 'good';
+  }
+
+  // Log summary HTML (shared across all states)
+  const summary = `
+    <div class="log-summary">
+      <div class="log-row">
+        <div class="log-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div>
+          <div class="log-key">Vitals</div>
+          <div class="log-val">All normal</div>
+        </div>
+      </div>
+      <div style="height:1px; background:var(--c-dg-08);"></div>
+      <div class="log-row">
+        <div class="log-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9" stroke-width="2.5"/><line x1="15" y1="9" x2="15.01" y2="9" stroke-width="2.5"/></svg>
+        </div>
+        <div>
+          <div class="log-key">Nausea</div>
+          <div class="log-val">${nauseaScore > 0 ? nauseaScore + '/10 — ' + (nauseaScore <= 3 ? 'Low' : nauseaScore <= 6 ? 'Moderate' : 'High') : 'Not rated'}</div>
+        </div>
+      </div>
+      <div style="height:1px; background:var(--c-dg-08);"></div>
+      <div class="log-row">
+        <div class="log-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9 9h.01M15 9h.01M8 15h8"/></svg>
+        </div>
+        <div>
+          <div class="log-key">Symptoms</div>
+          <div class="log-val" style="font-size:13px;">${sympText}</div>
+        </div>
+      </div>
+      <div style="height:1px; background:var(--c-dg-08);"></div>
+      <div class="log-row">
+        <div class="log-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        </div>
+        <div>
+          <div class="log-key">Appetite</div>
+          <div class="log-val" style="font-size:13px;">${appetiteLabels[appetiteChoice]}</div>
+        </div>
+      </div>
+    </div>`;
+
+  const cardiNudge = (label, sub) => `
+    <a href="coach.html" class="cardi-nudge" style="margin-bottom:0;">
+      <div style="width:36px;height:36px;border-radius:11px;background:rgba(199,185,255,0.18);border:1px solid rgba(199,185,255,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/><path d="M9 18v1a3 3 0 0 0 6 0v-1"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-sans);font-weight:700;font-size:14px;color:var(--c-dark-green);margin-bottom:2px;">${label}</div>
+        <div style="font-family:var(--font-sans);font-weight:400;font-size:13px;color:var(--c-dg-60);line-height:1.3;">${sub}</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(20,46,15,0.30)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>`;
+
+  if (severity === 'high') {
+    document.getElementById('header-greeting').textContent = 'Heads up, Bexli';
+    document.getElementById('header-sub').textContent = 'We noticed something — here\'s what\'s next';
+    const reason = nauseaScore >= 7
+      ? 'Your nausea level today is significant.'
+      : 'High nausea combined with skipped meals is a pattern we take seriously on GLP-1 therapy.';
+    area.innerHTML = `
+      <div class="safety-card" style="margin-bottom:0;">
+        <div class="completion-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#A60000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <div class="safety-title">Your care team has been notified</div>
+          <div class="safety-body">${reason} Coach Haley will check in before your 2:00 PM session. You're not alone in this.</div>
+          <a class="safety-cta" href="haley-chat.html">Message Coach Haley
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+      ${summary}
+      ${cardiNudge('Talk to Cardi about this', 'Cardi has seen your nausea and meals today — ask anything.')}`;
+
+  } else if (severity === 'moderate') {
+    document.getElementById('header-greeting').textContent = 'Logged, Bexli';
+    document.getElementById('header-sub').textContent = 'A few things worth watching today';
+    const reasons = [];
+    if (nauseaScore >= 4) reasons.push('nausea at ' + nauseaScore + '/10');
+    if (badAppetite) reasons.push(appetiteChoice === 'skipped' ? 'skipped meals' : 'very low intake');
+    if (manySymptoms) reasons.push(concerningSymptoms.length + ' symptoms reported');
+    const reasonStr = reasons.join(', ');
+    area.innerHTML = `
+      <div class="completion-positive" style="background:rgba(251,110,40,0.07);border-color:rgba(251,110,40,0.22);">
+        <div class="completion-icon" style="background:rgba(251,110,40,0.14);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c45000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div>
+          <div class="completion-title" style="color:#c45000;">Worth watching — ${reasonStr}</div>
+          <div class="completion-body">We're tracking this pattern. Try to eat something small today even if appetite is low — your muscles need protein.</div>
+        </div>
+      </div>
+      ${summary}
+      ${cardiNudge('Ask Cardi for help', 'Cardi can suggest meal timing and what to eat when appetite is low.')}`;
+
+  } else if (severity === 'watch') {
+    document.getElementById('header-greeting').textContent = 'Logged, Bexli';
+    document.getElementById('header-sub').textContent = 'A couple things to keep in mind today';
+    area.innerHTML = `
+      <div class="completion-positive" style="background:rgba(199,185,255,0.10);border-color:rgba(199,185,255,0.30);">
+        <div class="completion-icon" style="background:rgba(199,185,255,0.20);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7B6FCC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <div>
+          <div class="completion-title" style="color:#4a3f99;">Mild symptoms noted</div>
+          <div class="completion-body">${mehAppetite ? 'Appetite was lower than usual — try to hit your protein target today.' : 'A few symptoms reported. Nothing alarming — we\'ll keep tracking.'}</div>
+        </div>
+      </div>
+      ${summary}
+      ${cardiNudge('Ask Cardi anything', 'Cardi can suggest adjustments based on what you reported.')}`;
+
+  } else {
+    // Truly good
+    document.getElementById('header-greeting').textContent = 'Great start, Bexli';
+    document.getElementById('header-sub').textContent = 'You\'re set for the day';
+    const msg = feelingGood
+      ? 'Feeling good and vitals normal — that\'s a strong start. Keep it up.'
+      : 'Vitals are normal and no major symptoms. Keep up your protein intake today.';
+    area.innerHTML = `
+      <div class="completion-positive">
+        <div class="completion-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1e7a00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div>
+          <div class="completion-title" style="color:#1e7a00;">You're in good shape today</div>
+          <div class="completion-body">${msg}</div>
+        </div>
+      </div>
+      ${summary}`;
+  }
+}
+</script>
+
+</body>
+</html>

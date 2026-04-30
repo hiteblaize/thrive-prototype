@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  body{margin:0;padding:20px 24px;background:#fff;color:#142E0F;font-family:"Circular Std",sans-serif;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .field{display:flex;flex-direction:column;gap:10px}
+  .lbl{font-weight:700;font-size:16px;display:flex;align-items:center;gap:8px}
+  .err{color:#A60000;font-weight:700;margin-left:auto}
+  .input{height:60px;border-radius:6px;border:1px solid rgba(20,46,15,.08);background:#fff;padding:0 22px;display:flex;align-items:center;font-weight:700;font-size:16px;color:#142E0F}
+  .input.placeholder{color:rgba(20,46,15,.4)}
+  .input.active{border-color:#142E0F}
+  .input.error{border-color:#A60000}
+  .input.hover{box-shadow:0 4px 8px rgba(0,0,0,.12)}
+  .check{display:flex;align-items:center;gap:10px}
+  .ch{width:22px;height:22px;border-radius:3px;border:2px solid #142E0F;display:flex;align-items:center;justify-content:center;color:#fff;background:#fff}
+  .ch.on{background:#142E0F}
+  .ch.on::after{content:"✓";font-size:14px;font-weight:900}
+  .rd{width:22px;height:22px;border-radius:50%;border:2px solid #142E0F;background:#fff}
+  .rd.on{background:#142E0F;box-shadow:inset 0 0 0 4px #fff,inset 0 0 0 22px #142E0F}
+</style></head>
+<body>
+<div class="field"><div class="lbl">First Name</div><div class="input placeholder">Enter first name</div></div>
+<div class="field"><div class="lbl">First Name</div><div class="input active">Susan</div></div>
+<div class="field"><div class="lbl">First Name <span class="err">Please correct.</span></div><div class="input error">Susan Smith</div></div>
+<div class="field"><div class="lbl">Dropdown</div><div class="input placeholder" style="justify-content:space-between">Choose One <span style="opacity:.4">▾</span></div></div>
+<div class="check"><div class="ch on"></div><span>I agree to the terms</span></div>
+<div class="check"><div class="rd on"></div><span>Twice weekly</span><div class="rd" style="margin-left:14px"></div><span>Three times</span></div>
+</body></html>

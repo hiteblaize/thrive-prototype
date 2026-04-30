@@ -1,0 +1,34 @@
+/* Font Awesome 6 Pro — local faces
+   Carda uses FA as the entire icon system. Use the `fa` helper class
+   plus a variant (fas / far / fal / fat / fab) and a unicode glyph as
+   content.  */
+
+@font-face{font-family:"Font Awesome 6 Pro";font-weight:900;font-style:normal;
+  src:url("fonts/fa-solid-900.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Pro";font-weight:400;font-style:normal;
+  src:url("fonts/fa-regular-400.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Pro";font-weight:300;font-style:normal;
+  src:url("fonts/fa-light-300.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Pro";font-weight:100;font-style:normal;
+  src:url("fonts/fa-thin-100.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Sharp";font-weight:900;font-style:normal;
+  src:url("fonts/fa-sharp-solid-900.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Sharp";font-weight:400;font-style:normal;
+  src:url("fonts/fa-sharp-regular-400.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Brands";font-weight:400;font-style:normal;
+  src:url("fonts/fa-brands-400.ttf") format("truetype")}
+@font-face{font-family:"Font Awesome 6 Duotone";font-weight:900;font-style:normal;
+  src:url("fonts/fa-duotone-900.ttf") format("truetype")}
+
+.fa, .fas, .far, .fal, .fat, .fab, .fa-sharp {
+  display:inline-block; font-style:normal; font-variant:normal;
+  text-rendering:auto; -webkit-font-smoothing:antialiased;
+  line-height:1;
+}
+.fa,  .fas { font-family:"Font Awesome 6 Pro"; font-weight:900 }
+.far       { font-family:"Font Awesome 6 Pro"; font-weight:400 }
+.fal       { font-family:"Font Awesome 6 Pro"; font-weight:300 }
+.fat       { font-family:"Font Awesome 6 Pro"; font-weight:100 }
+.fa-sharp  { font-family:"Font Awesome 6 Sharp"; font-weight:900 }
+.fab       { font-family:"Font Awesome 6 Brands"; font-weight:400 }
+.fad       { font-family:"Font Awesome 6 Duotone"; font-weight:900 }

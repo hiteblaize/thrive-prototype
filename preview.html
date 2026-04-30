@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — GLP-1 Companion · Home Dashboard</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --c-bg-quiet:     #ECEEEC;
+  --c-error:        #A60000;
+  --c-success:      #34CE00;
+  --c-warning:      #FFAC05;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --sh-soft:        0 2px 6px rgba(0,0,0,0.07);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+/* Phone shell */
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* iOS Status Bar */
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-white);
+  letter-spacing: -0.01em;
+}
+.status-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-icon {
+  width: 16px;
+  height: 11px;
+  fill: var(--c-white);
+}
+
+/* Scroll area */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 80px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* Header bar */
+.app-header {
+  background: var(--c-dark-green);
+  padding: 20px 24px 26px;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.header-name {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+}
+.header-day {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-lime);
+  margin-bottom: 8px;
+}
+.header-message {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--c-white);
+}
+.phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(251,110,40,0.18);
+  border: 1px solid rgba(251,110,40,0.40);
+  border-radius: 9999px;
+  padding: 4px 12px 4px 8px;
+}
+.phase-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-citrus);
+  flex-shrink: 0;
+}
+.phase-badge-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--c-citrus);
+  text-transform: uppercase;
+}
+
+/* Content padding */
+.content {
+  padding: 20px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Section label */
+.section-label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  color: var(--c-dark-green);
+  padding: 0 4px;
+}
+
+/* Card base */
+.card {
+  background: var(--c-white);
+  border-radius: 32px;
+  border: 1px solid var(--c-dg-08);
+  overflow: hidden;
+}
+.card-shadow {
+  box-shadow: var(--sh-card);
+  border: none;
+}
+
+/* Thrive Score card */
+.score-card-header {
+  background: var(--c-sky);
+  padding: 18px 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.score-card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  color: var(--c-dark-green);
+}
+.score-card-tag {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(20,46,15,0.55);
+  background: rgba(20,46,15,0.08);
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+.score-card-body {
+  padding: 20px 24px 22px;
+}
+.score-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: nowrap;
+  line-height: 1;
+}
+.score-number {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--c-dark-green);
+  display: inline-block;
+}
+.score-denom {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--c-dg-30);
+  padding-bottom: 12px;
+}
+.score-caption {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--c-dg-60);
+  margin-bottom: 16px;
+}
+.score-caption strong {
+  font-weight: 700;
+  color: var(--c-dark-green);
+}
+.flame-wrap {
+  display: flex;
+  align-items: flex-end;
+  margin-left: 12px;
+  margin-bottom: 8px;
+  transition: filter 0.4s ease;
+}
+.flame-wrap.flame-full {
+  filter: drop-shadow(0 4px 14px rgba(240,112,32,0.5));
+}
+.summary-stat-flame {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 4px 14px rgba(240,112,32,0.5));
+}
+
+/* Progress bar */
+.progress-track {
+  height: 8px;
+  background: var(--c-dg-08);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--c-lime);
+  border-radius: 9999px;
+  transition: width 0.6s var(--ease-out);
+}
+
+/* Mini stats row */
+.mini-stats {
+  display: flex;
+  gap: 12px;
+}
+.mini-stat {
+  flex: 1;
+  background: var(--c-natural);
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+.mini-stat-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--c-dg-60);
+  margin-bottom: 4px;
+  letter-spacing: 0.01em;
+}
+.mini-stat-value {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-dark-green);
+  letter-spacing: -0.01em;
+}
+.mini-stat-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-dg-60);
+  margin-top: 1px;
+}
+
+/* Progress bar inside mini stat */
+.mini-progress-track {
+  height: 4px;
+  background: var(--c-dg-08);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.mini-progress-fill {
+  height: 100%;
+  background: var(--c-dark-green);
+  border-radius: 9999px;
+}
+.mini-progress-fill.lime { background: var(--c-lime); }
+.mini-progress-fill.citrus { background: var(--c-citrus); }
+
+/* Task cards */
+.task-card {
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--c-dg-08);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.task-card:last-child {
+  border-bottom: none;
+}
+.playlist-card {
+  background: var(--c-white);
+  border-radius: 24px;
+  border: 1px solid var(--c-dg-08);
+  overflow: hidden;
+}
+
+.task-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.task-icon.done   { background: var(--c-lime); }
+.task-icon.active { background: var(--c-sky); }
+.task-icon.upcoming { background: var(--c-natural); border: 1px solid var(--c-dg-08); }
+
+.task-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+.task-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--c-dark-green);
+  letter-spacing: -0.005em;
+}
+.task-name.done {
+  text-decoration: line-through;
+  color: var(--c-dg-60);
+}
+.task-detail {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--c-dg-60);
+  margin-top: 2px;
+  white-space: normal;
+  overflow: visible;
+}
+
+/* Protein mini-progress inside task */
+.task-protein-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.task-protein-track {
+  flex: 1;
+  height: 5px;
+  background: var(--c-dg-08);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.task-protein-fill {
+  height: 100%;
+  background: var(--c-sky);
+  border-radius: 9999px;
+  width: 68%;
+}
+.task-protein-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-dark-green);
+  flex-shrink: 0;
+}
+
+/* Hydration mini-row inside task card */
+.task-hydration-row { display:flex; align-items:center; gap:5px; margin-top:6px; }
+.task-h-drops { display:flex; gap:3px; align-items:center; }
+.task-h-drop { width:10px; height:10px; border-radius:50%; background:var(--c-dg-08); flex-shrink:0; transition:background 120ms; }
+.task-h-drop.filled { background:var(--c-sky); }
+.task-h-count { font-size:11px; font-weight:700; color:var(--c-dg-30); }
+
+/* Badge / check */
+.task-badge {
+  flex-shrink: 0;
+}
+.badge-done {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  background: var(--c-lime);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.badge-done svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* CTA button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-lime);
+  color: var(--c-dark-green);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  border: none;
+  border-radius: 9999px;
+  padding: 9px 18px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform 100ms, box-shadow 140ms var(--ease-out);
+}
+.btn-primary:hover {
+  box-shadow: var(--sh-card);
+}
+.btn-primary:active {
+  transform: scale(0.96);
+  box-shadow: none;
+}
+
+/* Microstep nudge banner — calm/supportive, not warning */
+.nudge-banner {
+  background: rgba(151,221,247,0.18);
+  border: 1px solid rgba(151,221,247,0.50);
+  border-radius: 20px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.nudge-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-sky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.nudge-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: var(--c-dark-green);
+}
+.nudge-text-wrap {}
+.nudge-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-dark-green);
+  margin-bottom: 3px;
+}
+.nudge-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--c-dg-60);
+}
+
+/* Hydration row */
+.hydration-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--c-dg-08);
+}
+.hydration-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--c-dg-60);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+.hydration-drops {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.drop {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--c-sky);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms;
+  flex-shrink: 0;
+}
+.drop.filled {
+  background: var(--c-sky);
+  border-color: var(--c-sky);
+}
+.drop svg { width: 14px; height: 14px; }
+.hydration-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-dark-green);
+  margin-left: 4px;
+}
+
+/* Locked task style */
+.task-card.locked {
+  opacity: 0.45;
+}
+.task-icon.locked-icon {
+  background: var(--c-dg-08);
+}
+.lock-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: var(--c-dg-08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.lock-badge svg { width: 13px; height: 13px; }
+
+/* Day summary — completed state */
+.summary-narrative { background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); overflow: hidden; }
+.summary-accent { height: 4px; background: var(--c-lime); }
+.summary-narrative-body { padding: 18px 20px 20px; }
+.summary-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--c-dg-30); margin-bottom: 6px; }
+.summary-headline { font-family: var(--font-display); font-weight: 600; font-size: 24px; color: var(--c-dark-green); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 8px; }
+.summary-body-text { font-family: var(--font-sans); font-weight: 400; font-size: 14px; color: var(--c-dg-60); line-height: 1.55; }
+.summary-habit-card { background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); overflow: hidden; margin-top: 10px; }
+.summary-habit-row { display: flex; align-items: center; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--c-dg-08); }
+.summary-habit-row:last-child { border-bottom: none; }
+.summary-habit-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.summary-habit-name { font-family: var(--font-sans); font-weight: 500; font-size: 14px; color: var(--c-dark-green); flex: 1; }
+.summary-habit-badge { font-family: var(--font-sans); font-weight: 700; font-size: 12px; border-radius: 9999px; padding: 4px 11px; flex-shrink: 0; }
+.summary-stats { display: flex; gap: 10px; }
+.summary-stat { flex: 1; background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); padding: 18px 16px 16px; }
+.summary-stat-value { font-family: var(--font-sans); font-weight: 900; font-size: 36px; letter-spacing: -0.03em; color: var(--c-dark-green); line-height: 1; margin-bottom: 6px; }
+.summary-stat-label { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: var(--c-dg-60); line-height: 1.4; }
+.summary-stat-sub { font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: var(--c-dg-30); margin-top: 2px; }
+.summary-microstep-card { background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); padding: 16px 18px; display: none; }
+.summary-microstep-card.visible { display: block; }
+.summary-microstep-label { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--c-dg-30); margin-bottom: 6px; }
+.summary-microstep-text { font-family: var(--font-sans); font-weight: 400; font-size: 14px; color: var(--c-dark-green); line-height: 1.5; }
+
+/* Celebration card */
+.celebration-card {
+  display: none;
+  background: var(--c-lime);
+  border-radius: 20px;
+  padding: 20px 20px 18px;
+  flex-direction: column;
+  gap: 10px;
+}
+.celebration-card.visible { display: flex; }
+.celebration-top {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.celebration-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.celebration-icon svg { width: 16px; height: 16px; }
+.celebration-heading {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--c-dark-green);
+}
+.celebration-sub {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(20,46,15,0.65);
+  padding-left: 0;
+}
+
+/* Article task card */
+.article-meta {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--c-dg-30);
+  margin-top: 3px;
+  letter-spacing: 0.01em;
+}
+.article-thumbs {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.thumb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--c-natural);
+  border: 1.5px solid var(--c-dg-08);
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--c-dg-60);
+  cursor: pointer;
+  transition: background 140ms, border-color 140ms;
+}
+.thumb-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.thumb-btn:hover { background: var(--c-white); border-color: var(--c-dg-30); }
+.thumb-up:hover { color: #3a4a0a; border-color: var(--c-lime); background: rgba(216,231,60,0.12); }
+
+/* Bottom nav */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+  padding-top: 8px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 140ms;
+}
+.nav-item.active {
+  opacity: 1;
+}
+.nav-item:hover { opacity: 0.75; }
+.nav-item.active:hover { opacity: 1; }
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.nav-dot {
+  position: absolute;
+  bottom: -3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-lime);
+}
+.nav-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: var(--c-white);
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- iOS Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <!-- Signal -->
+      <svg class="status-icon" viewBox="0 0 17 12" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <!-- WiFi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        <path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 0 0 0-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Scroll area -->
+  <div class="scroll-area">
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="header-day">Day 14</div>
+      <div class="header-message" id="header-message">Good morning, Bexli.</div>
+    </div>
+
+    <div class="content">
+
+      <!-- Cardi morning outreach -->
+      <a href="cardi-insight.html" style="text-decoration:none;" id="cardi-message-link">
+        <div style="display:flex; align-items:flex-start; gap:12px; background:var(--c-white); border-radius:20px; border:1px solid var(--c-dg-08); padding:14px 16px;">
+          <div style="width:36px; height:36px; border-radius:12px; background:var(--c-dark-green); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D8E73C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/>
+              <path d="M9 18v1a3 3 0 0 0 6 0v-1"/>
+            </svg>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-family:var(--font-sans); font-weight:700; font-size:12px; letter-spacing:0.04em; text-transform:uppercase; color:var(--c-dg-30); margin-bottom:4px;">Cardi</div>
+            <div style="font-family:var(--font-sans); font-weight:400; font-size:14px; line-height:1.5; color:var(--c-dark-green);">You mentioned food noise was high last night. How's this morning feeling?</div>
+          </div>
+          <svg style="flex-shrink:0; margin-top:10px;" viewBox="0 0 24 24" fill="none" stroke="rgba(20,46,15,0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </a>
+
+      <!-- Today's focus — only shown after check-in -->
+      <div class="nudge-banner" id="nudge-banner" style="display:none">
+        <div class="nudge-icon">
+          <!-- Spark / tip icon -->
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="#142E0F" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="4" fill="#142E0F" opacity="0.15"/>
+            <circle cx="12" cy="12" r="2.5" fill="#142E0F"/>
+          </svg>
+        </div>
+        <div class="nudge-text-wrap">
+          <div class="nudge-title" id="nudge-title">Today's focus</div>
+          <div class="nudge-body" id="microstep-body">Since you logged morning nausea, try sipping ginger tea 30 minutes before training to settle your stomach.</div>
+        </div>
+      </div>
+
+      <!-- Day summary — shown in states 2 and 3 -->
+      <div id="day-summary" style="display:none; flex-direction:column; gap:16px;">
+
+        <div class="summary-narrative">
+          <div class="summary-narrative-body" style="padding-top:22px;">
+            <div style="display:flex; justify-content:center; margin-bottom:14px; filter:drop-shadow(0 6px 16px rgba(240,112,32,0.5));">
+              <svg viewBox="0 0 48 60" xmlns="http://www.w3.org/2000/svg" width="64" height="80">
+                <defs>
+                  <linearGradient id="nfg1" x1="24" y1="56" x2="24" y2="4" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#F07020"/><stop offset="100%" stop-color="#D04010"/>
+                  </linearGradient>
+                  <linearGradient id="nfg2" x1="24" y1="50" x2="24" y2="17" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FFB830"/><stop offset="100%" stop-color="#F07020"/>
+                  </linearGradient>
+                  <linearGradient id="nfg3" x1="24" y1="46" x2="24" y2="27" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#FFF060"/><stop offset="100%" stop-color="#FFD040"/>
+                  </linearGradient>
+                </defs>
+                <path d="M24 4 C27 11 38 19 38 30 C38 40.5 31.8 48 24 48 C16.2 48 10 40.5 10 30 C10 19 21 11 24 4Z" fill="url(#nfg1)"/>
+                <path d="M24 17 C26.5 22 33 28 33 35 C33 40.5 29 44 24 44 C19 44 15 40.5 15 35 C15 28 21.5 22 24 17Z" fill="url(#nfg2)"/>
+                <path d="M24 28 C25.8 31.5 28 35 28 38 C28 40.3 26.2 42 24 42 C21.8 42 20 40.3 20 38 C20 35 22.2 31.5 24 28Z" fill="url(#nfg3)"/>
+              </svg>
+            </div>
+            <div class="summary-headline" id="summary-headline" style="text-align:center;">Fat down. Muscle protected.</div>
+            <div class="summary-body-text" id="summary-body-text" style="text-align:center; margin-top:6px;">Every habit hit. Your body has what it needs to lose fat and protect muscle today.</div>
+          </div>
+        </div>
+
+        <div class="summary-microstep-card" id="summary-microstep-card">
+          <div class="summary-microstep-label">Tonight's focus</div>
+          <div class="summary-microstep-text" id="summary-microstep-text"></div>
+        </div>
+
+        <div>
+          <div class="section-label">Today</div>
+          <div class="summary-habit-card">
+            <div class="summary-habit-row">
+              <div class="summary-habit-dot" style="background:var(--c-lime);"></div>
+              <div class="summary-habit-name">Morning check-in</div>
+              <div class="summary-habit-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">Done</div>
+            </div>
+            <div class="summary-habit-row">
+              <div class="summary-habit-dot" style="background:var(--c-lime);"></div>
+              <div class="summary-habit-name">Protein goal</div>
+              <div class="summary-habit-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">Done</div>
+            </div>
+            <div class="summary-habit-row">
+              <div class="summary-habit-dot" style="background:var(--c-lime);"></div>
+              <div class="summary-habit-name">Exercise session</div>
+              <div class="summary-habit-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">Done</div>
+            </div>
+            <div class="summary-habit-row">
+              <div class="summary-habit-dot" style="background:var(--c-lime);"></div>
+              <div class="summary-habit-name">Lifestyle session</div>
+              <div class="summary-habit-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">Done</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-stats">
+          <div class="summary-stat">
+            <div class="summary-stat-value" id="summary-score">100</div>
+            <div class="summary-stat-label">Thrive Score</div>
+          </div>
+          <div class="summary-stat">
+            <div class="summary-stat-value" style="color:var(--c-citrus);">−1.8</div>
+            <div class="summary-stat-label">lbs this week</div>
+            <div class="summary-stat-sub">186.0 today</div>
+          </div>
+        </div>
+
+        <a href="evening.html" style="text-decoration:none;" id="evening-optional-link">
+          <div style="background:var(--c-white); border-radius:20px; border:1px solid var(--c-dg-08); padding:16px 18px; display:flex; align-items:center; gap:14px;">
+            <div style="width:44px; height:44px; border-radius:14px; background:var(--c-natural); border:1px solid var(--c-dg-08); display:flex; align-items:center; justify-content:center; flex-shrink:0;" id="evening-optional-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+              </svg>
+            </div>
+            <div style="flex:1;">
+              <div style="font-family:var(--font-sans); font-size:11px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:var(--c-dg-30); margin-bottom:3px;">Optional</div>
+              <div style="font-family:var(--font-sans); font-weight:700; font-size:15px; color:var(--c-dark-green);" id="evening-optional-name">Evening Wrap-Up</div>
+              <div style="font-family:var(--font-sans); font-weight:400; font-size:13px; color:var(--c-dg-60); margin-top:2px;">Cardi reviews your day · 2 min</div>
+            </div>
+            <div id="evening-optional-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(20,46,15,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </div>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Celebration card — shown when playlist complete -->
+      <a href="evening.html" style="text-decoration:none; display:none;" id="celebration-link">
+      <div class="celebration-card" id="celebration-card">
+        <div class="celebration-top">
+          <div class="celebration-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D8E73C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div class="celebration-heading" id="celebration-heading">Day 14 done. Fat down, muscle protected.</div>
+        </div>
+        <div class="celebration-sub" id="celebration-sub">Every habit hit. Lock it in with your Evening Wrap-Up →</div>
+      </div>
+      </a>
+
+      <!-- Today's Score -->
+      <div id="score-section">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="section-label">Thrive Score</div>
+        <div class="card card-shadow">
+          <div class="score-card-body">
+            <div class="score-row">
+              <span class="score-number" id="today-score">0</span>
+              <span class="score-denom">/ 100</span>
+              <div class="flame-wrap" id="flame-wrap">
+                <svg id="flame-svg" viewBox="0 0 48 60" xmlns="http://www.w3.org/2000/svg" width="44" height="55">
+                  <defs>
+                    <linearGradient id="fg1" x1="24" y1="56" x2="24" y2="4" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" id="fg1-a"/><stop offset="100%" id="fg1-b"/>
+                    </linearGradient>
+                    <linearGradient id="fg2" x1="24" y1="50" x2="24" y2="17" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" id="fg2-a"/><stop offset="100%" id="fg2-b"/>
+                    </linearGradient>
+                    <linearGradient id="fg3" x1="24" y1="46" x2="24" y2="27" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" id="fg3-a"/><stop offset="100%" id="fg3-b"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M24 4 C27 11 38 19 38 30 C38 40.5 31.8 48 24 48 C16.2 48 10 40.5 10 30 C10 19 21 11 24 4Z" fill="url(#fg1)"/>
+                  <path d="M24 17 C26.5 22 33 28 33 35 C33 40.5 29 44 24 44 C19 44 15 40.5 15 35 C15 28 21.5 22 24 17Z" fill="url(#fg2)"/>
+                  <path d="M24 28 C25.8 31.5 28 35 28 38 C28 40.3 26.2 42 24 42 C21.8 42 20 40.3 20 38 C20 35 22.2 31.5 24 28Z" fill="url(#fg3)"/>
+                </svg>
+              </div>
+            </div>
+            <div class="score-caption" id="today-caption">Complete your morning check-in to start building your score.</div>
+            <div class="progress-track">
+              <div class="progress-fill" id="today-progress" style="width:0%;"></div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <!-- Daily Playlist -->
+      <div id="playlist-section">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+        <div class="section-label">Today's Playlist</div>
+        <div class="playlist-card">
+
+          <!-- Task 1: Morning Check-In (pending) -->
+          <div class="task-card" id="checkin-task-card">
+            <div class="task-icon upcoming" id="checkin-task-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" opacity="0.25"/>
+                <path d="M12 8v4l3 3" opacity="0.8"/>
+              </svg>
+            </div>
+            <div class="task-info">
+              <div class="task-name" data-pretext id="checkin-task-name">Morning Check-In</div>
+              <div class="task-detail" id="checkin-task-detail">60-sec symptom check · How are you feeling today?</div>
+            </div>
+            <div id="checkin-task-action"><a href="checkin.html" style="text-decoration:none;"><button class="btn-primary" aria-label="Start morning check-in">Start</button></a></div>
+          </div>
+
+          <!-- Task 2: Today's Read -->
+          <div class="task-card" id="article-task-card">
+            <div class="task-icon upcoming" id="article-task-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+              </svg>
+            </div>
+            <div class="task-info">
+              <div class="task-name" data-pretext id="article-task-name">Today's Read</div>
+              <div class="task-detail" id="article-task-detail">Protect your muscle while losing weight on GLP-1s</div>
+              <div class="article-meta" id="article-task-meta">3 min · Carda Health</div>
+            </div>
+            <div id="article-task-action"><a href="article.html" style="text-decoration:none;"><button class="btn-primary" aria-label="Read today's article">Read</button></a></div>
+          </div>
+
+          <!-- Task 3: Protein Tracker -->
+          <a href="meal.html" style="text-decoration:none; display:block;">
+          <div class="task-card" id="meal-task-card">
+            <div class="task-icon upcoming" id="meal-task-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/>
+                <path d="M7 2v20"/>
+                <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
+              </svg>
+            </div>
+            <div class="task-info">
+              <div class="task-name" data-pretext id="meal-task-name">Fuel Reminder</div>
+              <div class="task-detail" id="meal-task-detail">Every 3–4 hrs · protect your muscle</div>
+            </div>
+            <span id="meal-task-action"><button class="btn-primary" aria-label="Log fuel">Add</button></span>
+          </div>
+          </a>
+
+          <!-- Task 3: Resistance Training (upcoming) -->
+          <div class="task-card" id="exercise-task-card">
+            <div class="task-icon upcoming" id="exercise-task-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="10" width="4" height="4" rx="1" fill="#142E0F" opacity="0.4"/>
+                <rect x="18" y="10" width="4" height="4" rx="1" fill="#142E0F" opacity="0.4"/>
+                <rect x="5" y="8" width="3" height="8" rx="1.5" fill="#142E0F" opacity="0.7"/>
+                <rect x="16" y="8" width="3" height="8" rx="1.5" fill="#142E0F" opacity="0.7"/>
+                <rect x="8" y="11" width="8" height="2" rx="1" fill="#142E0F"/>
+              </svg>
+            </div>
+            <div class="task-info">
+              <div class="task-name" data-pretext id="exercise-task-name">Exercise Session</div>
+              <div class="task-detail" id="exercise-task-detail">2:00 PM · Coach Haley · 45 min</div>
+            </div>
+            <div id="exercise-task-action"><a href="session.html" style="text-decoration:none;"><button class="btn-primary" aria-label="Join resistance training session">Join</button></a></div>
+          </div>
+
+          <!-- Task 5: Lifestyle Session (3pm) -->
+          <div class="task-card" id="lifestyle-task-card">
+            <div class="task-icon upcoming" id="lifestyle-task-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#142E0F" stroke-width="1.8" opacity="0.3"/>
+                <path d="M12 6v6l4 2" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+                <path d="M8 14s1 2 4 2 4-2 4-2" stroke="#142E0F" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+              </svg>
+            </div>
+            <div class="task-info">
+              <div class="task-name" data-pretext id="lifestyle-task-name">Lifestyle Session</div>
+              <div class="task-detail" id="lifestyle-task-detail">3:00 PM · Coach Maya · 60 min · Mindful Eating</div>
+            </div>
+            <div id="lifestyle-task-action"><a href="lifestyle-session.html" style="text-decoration:none;"><button class="btn-primary" aria-label="Join lifestyle session">Join</button></a></div>
+          </div>
+
+        </div>
+        </div>
+      </div>
+
+      <!-- Spacer so content clears the nav -->
+      <div style="height:8px;"></div>
+
+    </div><!-- /content -->
+  </div><!-- /scroll-area -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <div class="nav-item active" role="button" tabindex="0" aria-current="page">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9,22 9,12 15,12 15,22" fill="#142E0F" stroke="none"/>
+        </svg>
+        <div class="nav-dot"></div>
+      </div>
+      <span class="nav-label">Home</span>
+    </div>
+    <a href="chat.html" class="nav-item" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <div style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; border-radius:50%; background:var(--c-citrus); border:1.5px solid var(--c-dark-green);"></div>
+      </div>
+      <span class="nav-label">Chat</span>
+    </a>
+    <a href="progress.html" class="nav-item" style="text-decoration:none;" role="button" tabindex="0">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <span class="nav-label">Progress</span>
+    </a>
+  </nav>
+
+</div><!-- /phone -->
+
+<script type="module">
+// FALLBACK: using CDN for Pretext text layout engine
+import { prepare, layout } from 'https://esm.sh/@chenglou/pretext';
+
+await document.fonts.ready;
+
+const elements = document.querySelectorAll('[data-pretext]');
+const prepared = new Map();
+
+for (const el of elements) {
+  const text = el.textContent;
+  const font = getComputedStyle(el).font;
+  try { prepared.set(el, prepare(text, font)); } catch(e) {}
+}
+
+function relayout() {
+  for (const [el, handle] of prepared) {
+    const lh = parseFloat(getComputedStyle(el).lineHeight) || 24;
+    try {
+      const { height } = layout(handle, el.clientWidth, lh);
+      if (height > 0) el.style.height = height + 'px';
+    } catch(e) {}
+  }
+}
+
+new ResizeObserver(() => relayout()).observe(document.body);
+relayout();
+</script>
+
+<script>
+(function() {
+  const checkin = JSON.parse(localStorage.getItem('carda_checkin') || 'null');
+  const evening = JSON.parse(localStorage.getItem('carda_evening') || 'null');
+  const protein = JSON.parse(localStorage.getItem('carda_protein') || 'null');
+  const el = document.getElementById('microstep-body');
+  const banner = document.getElementById('nudge-banner');
+
+  if (evening) {
+    // Post wrap-up: surface Cardi's microstep
+    const microsteps = {
+      highHunger: 'Sip water slowly before bed — it helps ease late hunger on GLP-1s.',
+      foodNoise:  'Notice the craving, write it down, and let it pass. That\'s the practice.',
+      strong:     'Rest well — your muscles rebuild overnight. You did the work today.',
+      default:    'A short walk or stretch before bed will help your body wind down.',
+    };
+    const key = evening.hungerScore >= 7 ? 'highHunger'
+      : (evening.foodNoise && evening.foodNoise.length > 0) ? 'foodNoise'
+      : (protein?.logged >= protein?.goal && (!evening.hungerScore || evening.hungerScore < 5)) ? 'strong'
+      : 'default';
+    if (el) el.textContent = microsteps[key];
+    const title = document.getElementById('nudge-title');
+    if (title) title.textContent = "Tonight's focus";
+    if (banner) banner.style.display = '';
+    const summaryCard = document.getElementById('summary-microstep-card');
+    const summaryText = document.getElementById('summary-microstep-text');
+    if (summaryText) summaryText.textContent = microsteps[key];
+    if (summaryCard) summaryCard.classList.add('visible');
+    return;
+  }
+
+  if (!checkin) return;
+  const { severity } = checkin;
+  const microsteps = {
+    high:     'Sip electrolytes first, then try a few crackers before noon — don\'t force a full meal.',
+    moderate: 'Eat 25–30g protein before 1pm — Greek yogurt or chicken work well on nausea days.',
+    watch:    'Add protein powder + Greek yogurt to your pre-session smoothie — target 30g before 1pm.',
+    good:     'Full pre-session meal 2 hours before your session — 40g protein + complex carbs for maximum output.',
+  };
+  if (el && microsteps[severity]) el.textContent = microsteps[severity];
+  if (banner) banner.style.display = '';
+})();
+
+// ── Today's score ────────────────────────────────────────────
+(function() {
+  const checkin  = JSON.parse(localStorage.getItem('carda_checkin')  || 'null');
+  const protein  = JSON.parse(localStorage.getItem('carda_protein')  || 'null');
+  const article  = JSON.parse(localStorage.getItem('carda_article')  || 'null');
+  const exercise = JSON.parse(localStorage.getItem('carda_exercise') || 'null');
+  const lifestyle= JSON.parse(localStorage.getItem('carda_lifestyle')|| 'null');
+
+  let score = 0;
+
+  if (checkin) score += 20;
+  if (protein) {
+    if (protein.logged >= protein.goal) score += 35;
+    else if (protein.logged > 0) score += 15;
+  }
+  if (article  && article.read)       score += 10;
+  if (exercise && exercise.completed) score += 40;
+  if (lifestyle&& lifestyle.completed)score += 25;
+
+  const captions = [
+    [0,  0,  'Every habit today protects your muscle while the medication works.'],
+    [1,  20, '<strong>Day started.</strong> Your check-in helps Cardi keep your plan on track.'],
+    [21, 45, '<strong>Building momentum.</strong> Fuel and movement are protecting your muscle right now.'],
+    [46, 70, '<strong>Habits sticking.</strong> You\'re losing fat — these habits make sure you keep the muscle.'],
+    [71, 99, '<strong>Strong day.</strong> The medication handles appetite. You\'re handling everything else.'],
+    [100,100,'<strong>Day 14 complete.</strong> Fat down, muscle protected. This is exactly how it\'s supposed to work.'],
+  ];
+
+  const MAX = 130;
+  const scaled = score === 0 ? 0 : Math.round((score / MAX) * 100);
+  const caption = captions.find(([lo, hi]) => scaled >= lo && scaled <= hi);
+
+  const numEl  = document.getElementById('today-score');
+  const capEl  = document.getElementById('today-caption');
+  const barEl  = document.getElementById('today-progress');
+
+  if (numEl) numEl.textContent = scaled;
+  if (capEl && caption) capEl.innerHTML = caption[2];
+  if (barEl) barEl.style.width = scaled + '%';
+  const summaryScore = document.getElementById('summary-score');
+  if (summaryScore) summaryScore.textContent = scaled;
+
+  // Flame state
+  const flameWrap = document.getElementById('flame-wrap');
+  const flameSvg  = document.getElementById('flame-svg');
+  if (flameWrap && flameSvg) {
+    const states = {
+      ember: { w:36, h:45, glow:false,
+        g1:['#A09880','#7A7060'], g2:['#BFB59C','#A09880'], g3:['#D4C8B0','#BFB59C'] },
+      low:   { w:44, h:55, glow:false,
+        g1:['#E8622A','#C04818'], g2:['#F5923C','#E8622A'], g3:['#FFC040','#F5923C'] },
+      mid:   { w:52, h:65, glow:false,
+        g1:['#F07020','#D04010'], g2:['#FFB030','#F07020'], g3:['#FFE060','#FFB030'] },
+      full:  { w:58, h:72, glow:true,
+        g1:['#F07820','#D04010'], g2:['#FFB830','#F07820'], g3:['#FFF060','#FFD040'] },
+    };
+    const s = scaled === 0 ? states.ember : scaled <= 45 ? states.low : scaled <= 79 ? states.mid : states.full;
+    flameSvg.setAttribute('width', s.w);
+    flameSvg.setAttribute('height', s.h);
+    const setGrad = (id, [c1, c2]) => {
+      document.getElementById(id+'-a').setAttribute('stop-color', c1);
+      document.getElementById(id+'-b').setAttribute('stop-color', c2);
+    };
+    setGrad('fg1', s.g1); setGrad('fg2', s.g2); setGrad('fg3', s.g3);
+    flameWrap.className = s.glow ? 'flame-wrap flame-full' : 'flame-wrap';
+  }
+})();
+
+// ── Header message + Evening Wrap-Up unlock ──────────────────
+(function() {
+  const el = document.getElementById('header-message');
+  if (!el) return;
+
+  const checkin  = JSON.parse(localStorage.getItem('carda_checkin')  || 'null');
+  const protein  = JSON.parse(localStorage.getItem('carda_protein')  || 'null');
+  const article  = JSON.parse(localStorage.getItem('carda_article')  || 'null');
+  const exercise = JSON.parse(localStorage.getItem('carda_exercise') || 'null');
+  const lifestyle= JSON.parse(localStorage.getItem('carda_lifestyle')|| 'null');
+  const evening  = JSON.parse(localStorage.getItem('carda_evening')  || 'null');
+
+  const allDone = checkin && protein && protein.logged >= protein.goal
+    && article?.read && exercise?.completed && lifestyle?.completed;
+
+  // State 3: post wrap-up
+  if (evening) {
+    el.textContent = 'Good evening, Bexli.';
+    ['playlist-section','celebration-link','score-section','nudge-banner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const summary = document.getElementById('day-summary');
+    if (summary) summary.style.display = 'flex';
+    const headline  = document.getElementById('summary-headline');
+    const bodyText  = document.getElementById('summary-body-text');
+    const optLink   = document.getElementById('evening-optional-link');
+    const optIcon   = document.getElementById('evening-optional-icon');
+    const optName   = document.getElementById('evening-optional-name');
+    const optBadge  = document.getElementById('evening-optional-badge');
+    if (headline) headline.textContent = 'Fat down. Muscle protected.';
+    if (bodyText) bodyText.textContent = 'Every habit hit. Day 14 complete.';
+    if (optLink)  { optLink.removeAttribute('href'); optLink.style.pointerEvents = 'none'; }
+    if (optIcon)  { optIcon.style.background = 'var(--c-lime)'; optIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="20 6 9 17 4 12"/></svg>`; optIcon.style.border = 'none'; }
+    if (optName)  optName.style.textDecoration = 'line-through';
+    if (optBadge) optBadge.innerHTML = `<span style="font-family:var(--font-sans); font-weight:700; font-size:12px; border-radius:9999px; padding:4px 11px; background:rgba(216,231,60,0.15); color:var(--c-dark-green);">Done</span>`;
+    return;
+  }
+
+  // State 2: all tasks done, pre wrap-up
+  if (allDone) {
+    el.textContent = 'Good evening, Bexli.';
+    ['playlist-section','celebration-link','score-section','nudge-banner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const summary = document.getElementById('day-summary');
+    if (summary) summary.style.display = 'flex';
+    return;
+  }
+
+  // State 1: default — time-based greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  el.textContent = greeting + ', Bexli.';
+})();
+
+// ── Protein sync ─────────────────────────────────────────────
+(function() {
+  const raw = localStorage.getItem('carda_protein');
+  if (!raw) return;
+  const { logged, goal } = JSON.parse(raw);
+  const remaining = Math.max(goal - logged, 0);
+  const pct = Math.min(logged / goal * 100, 100);
+
+  // Mini-stat in Thrive Score card
+  // Task card — protein
+  const detail = document.getElementById('meal-task-detail');
+  const icon   = document.getElementById('meal-task-icon');
+  const name   = document.getElementById('meal-task-name');
+  const action = document.getElementById('meal-task-action');
+
+  if (remaining === 0) {
+    if (detail) detail.textContent = 'Protein floor reached — great work';
+    if (icon)   { icon.className = 'task-icon done'; icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`; }
+    if (name)   name.classList.add('done');
+    if (action) action.innerHTML = `<div class="badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+  } else {
+    if (detail) detail.textContent = `${remaining}g to go to protect your muscle today`;
+  }
+
+})();
+
+// ── Check-in task card done state ────────────────────────────
+(function() {
+  const checkin = JSON.parse(localStorage.getItem('carda_checkin') || 'null');
+  if (!checkin) return;
+
+  const severityLabels = { good: 'Feeling good today', watch: 'Mild symptoms noted', moderate: 'Moderate symptoms noted', high: 'Rough morning logged' };
+
+  const icon   = document.getElementById('checkin-task-icon');
+  const name   = document.getElementById('checkin-task-name');
+  const detail = document.getElementById('checkin-task-detail');
+  const action = document.getElementById('checkin-task-action');
+
+  if (icon)   { icon.className = 'task-icon done'; icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`; }
+  if (name)   name.classList.add('done');
+  if (detail) detail.textContent = severityLabels[checkin.severity] || 'Check-in complete';
+  if (action) action.innerHTML = `<div class="badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+})();
+
+// ── Article task card done state ─────────────────────────────
+(function() {
+  const article = JSON.parse(localStorage.getItem('carda_article') || 'null');
+  if (!article || !article.read) return;
+
+  const icon   = document.getElementById('article-task-icon');
+  const name   = document.getElementById('article-task-name');
+  const detail = document.getElementById('article-task-detail');
+  const meta   = document.getElementById('article-task-meta');
+  const action = document.getElementById('article-task-action');
+
+  if (icon)   { icon.className = 'task-icon done'; icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`; }
+  if (name)   name.classList.add('done');
+  if (detail) detail.textContent = 'Protect your muscle while losing weight on GLP-1s';
+  if (meta)   meta.style.display = 'none';
+  if (action) action.innerHTML = `<div class="badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+})();
+
+// ── Session task card done states ────────────────────────────
+(function() {
+  const sessions = [
+    { key: 'carda_exercise',  icon: 'exercise-task-icon',  name: 'exercise-task-name',  detail: 'exercise-task-detail',  action: 'exercise-task-action',  doneDetail: 'Session complete · 45 min with Coach Haley' },
+    { key: 'carda_lifestyle', icon: 'lifestyle-task-icon', name: 'lifestyle-task-name', detail: 'lifestyle-task-detail', action: 'lifestyle-task-action', doneDetail: 'Session complete · Mindful Eating with Coach Maya' },
+  ];
+  sessions.forEach(({ key, icon, name, detail, action, doneDetail }) => {
+    const data = JSON.parse(localStorage.getItem(key) || 'null');
+    if (!data || !data.completed) return;
+    const iconEl   = document.getElementById(icon);
+    const nameEl   = document.getElementById(name);
+    const detailEl = document.getElementById(detail);
+    const actionEl = document.getElementById(action);
+    if (iconEl)   { iconEl.className = 'task-icon done'; iconEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`; }
+    if (nameEl)   nameEl.classList.add('done');
+    if (detailEl) detailEl.textContent = doneDetail;
+    if (actionEl) actionEl.innerHTML = `<div class="badge-done"><svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+  });
+})();
+
+// ── Hydration mini-row on task card ──────────────────────────
+(function() {
+  const hydrationRaw = localStorage.getItem('carda_hydration');
+  const glasses = hydrationRaw ? JSON.parse(hydrationRaw).glasses : 0;
+  const hydRow   = document.getElementById('meal-hydration-row');
+  const hydDrops = document.getElementById('meal-hydration-drops');
+  const hydCount = document.getElementById('meal-hydration-count');
+  if (hydRow) hydRow.style.display = 'flex';
+  if (hydDrops) {
+    hydDrops.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement('div');
+      d.className = 'task-h-drop' + (i < glasses ? ' filled' : '');
+      hydDrops.appendChild(d);
+    }
+  }
+  if (hydCount) hydCount.textContent = glasses + ' / 8';
+})();
+
+// ── Secret reset (long-press header 2s) ──────────────────────
+(function() {
+  const header = document.querySelector('.app-header');
+  if (!header) return;
+  let timer;
+  header.addEventListener('touchstart', () => {
+    timer = setTimeout(() => {
+      ['carda_checkin','carda_protein','carda_hydration','carda_article','carda_exercise','carda_lifestyle','carda_evening'].forEach(k => localStorage.removeItem(k));
+      window.location.reload();
+    }, 2000);
+  }, { passive: true });
+  header.addEventListener('touchend', () => clearTimeout(timer), { passive: true });
+  header.addEventListener('touchmove', () => clearTimeout(timer), { passive: true });
+  // Desktop fallback: right-click header
+  header.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    ['carda_checkin','carda_protein','carda_hydration','carda_article','carda_exercise','carda_lifestyle','carda_evening'].forEach(k => localStorage.removeItem(k));
+    window.location.reload();
+  });
+})();
+</script>

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "/Users/blaize/.bun/bin/bun",
+      "runtimeArgs": ["x", "serve", "-p", "7823", "."],
+      "port": 7823
+    }
+  ]
+}

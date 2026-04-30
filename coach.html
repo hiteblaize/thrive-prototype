@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Cardi</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-16:        rgba(20,46,15,0.16);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+/* Header */
+.app-header {
+  background: var(--c-dark-green);
+  padding: 16px 24px 18px;
+  flex-shrink: 0;
+}
+.header-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.cardi-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(199,185,255,0.18);
+  border: 1.5px solid rgba(199,185,255,0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cardi-avatar svg { width: 22px; height: 22px; }
+.header-name-wrap {}
+.header-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  color: var(--c-white);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(199,185,255,0.15);
+  border: 1px solid rgba(199,185,255,0.25);
+  border-radius: 9999px;
+  padding: 2px 8px;
+}
+.header-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-plum);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.header-tag-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-plum);
+}
+
+/* Context strip */
+.context-strip {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.context-strip::-webkit-scrollbar { display: none; }
+.ctx-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 9999px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ctx-pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ctx-pill-text {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 11px;
+  color: rgba(255,255,255,0.70);
+  letter-spacing: 0.01em;
+}
+
+/* Chat scroll area */
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 0;
+}
+.chat-scroll::-webkit-scrollbar { display: none; }
+
+/* Date divider */
+.chat-date {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--c-dg-30);
+  text-transform: uppercase;
+  margin: 4px 0;
+}
+
+/* Cardi message */
+.msg-cardi {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 88%;
+  align-self: flex-start;
+}
+.msg-cardi-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(199,185,255,0.18);
+  border: 1px solid rgba(199,185,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+.msg-cardi-avatar svg { width: 14px; height: 14px; }
+.msg-cardi-bubble {
+  background: var(--c-white);
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.msg-cardi-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-dark-green);
+}
+.msg-cardi-text strong { font-weight: 700; }
+.msg-time {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--c-dg-30);
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+/* User message */
+.msg-user {
+  align-self: flex-end;
+  max-width: 80%;
+}
+.msg-user-bubble {
+  background: var(--c-dark-green);
+  border-radius: 18px 18px 4px 18px;
+  padding: 12px 14px;
+}
+.msg-user-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-white);
+}
+.msg-user .msg-time { text-align: right; }
+
+/* Microstep callout card */
+.microstep-card {
+  background: rgba(216,231,60,0.10);
+  border: 1px solid rgba(216,231,60,0.30);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-top: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.microstep-card-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(216,231,60,0.20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.microstep-card-icon svg { width: 15px; height: 15px; }
+.microstep-card-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3a4a0a;
+  margin-bottom: 3px;
+}
+.microstep-card-body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--c-dark-green);
+}
+
+/* Suggested replies */
+.suggested-wrap {
+  padding: 10px 16px 8px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.suggested-wrap::-webkit-scrollbar { display: none; }
+.suggest-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--c-white);
+  border: 1.5px solid var(--c-dg-08);
+  border-radius: 9999px;
+  padding: 7px 14px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--c-dark-green);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+/* Input bar */
+.input-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 28px;
+  background: var(--c-natural);
+  border-top: 1px solid var(--c-dg-08);
+  flex-shrink: 0;
+}
+.input-field {
+  flex: 1;
+  background: var(--c-white);
+  border: 1.5px solid var(--c-dg-08);
+  border-radius: 9999px;
+  padding: 11px 18px;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--c-dg-30);
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  pointer-events: none;
+  user-select: none;
+}
+.input-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.input-send svg { width: 18px; height: 18px; }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; padding-top: 8px; cursor: pointer; opacity: 0.45; transition: opacity 140ms; text-decoration: none; }
+.nav-item.active { opacity: 1; }
+.nav-item:hover { opacity: 0.75; }
+.nav-item.active:hover { opacity: 1; }
+.nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+.nav-dot { position: absolute; bottom: -3px; width: 5px; height: 5px; border-radius: 50%; background: var(--c-lime); }
+.nav-label { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.02em; color: var(--c-white); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 0 0 0-4z"/></svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-identity">
+      <div class="cardi-avatar">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" stroke="#C7B9FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 18v1a3 3 0 0 0 6 0v-1" stroke="#C7B9FF" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="9.5" cy="10" r="1" fill="#C7B9FF"/>
+          <circle cx="14.5" cy="10" r="1" fill="#C7B9FF"/>
+          <path d="M10 13.5c.5.7 1 1 2 1s1.5-.3 2-1" stroke="#C7B9FF" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="header-name-wrap">
+        <div class="header-name">Cardi</div>
+        <div class="header-tag">
+          <div class="header-tag-dot"></div>
+          <span class="header-tag-text">Your AI coach · online</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="context-strip" id="context-strip" style="display:none;"></div>
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-scroll" id="chat">
+
+    <div class="chat-date">Today · Apr 29</div>
+
+    <!-- Cardi opens with context from check-in -->
+    <div class="msg-cardi" id="cardi-opening">
+      <div class="msg-cardi-avatar">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" stroke="#C7B9FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div class="msg-cardi-bubble">
+          <div class="msg-cardi-text" id="cardi-opening-text">Good morning, Bexli. I saw your check-in — nausea at 6 and appetite was low. That's the same pattern you had on Day 7, which is actually a sign your body is still adjusting to the dose increase. <strong>How are you feeling right now?</strong></div>
+        </div>
+        <div class="msg-time">8:14 AM</div>
+      </div>
+    </div>
+
+    <!-- Dynamic conversation thread — rendered by script -->
+    <div id="conversation-thread"></div>
+
+    <!-- Spacer so last message clears the input -->
+    <div style="height: 160px;"></div>
+
+  </div>
+
+  <!-- Suggested replies -->
+  <div class="suggested-wrap" id="suggested-wrap">
+    <div class="suggest-chip">Will this get easier?</div>
+    <div class="suggest-chip">What should I eat post-session?</div>
+    <div class="suggest-chip">Show my nausea trend</div>
+    <div class="suggest-chip">When does dose stabilise?</div>
+  </div>
+
+  <!-- Input bar -->
+  <div class="input-bar">
+    <div class="input-field">Ask Cardi anything…</div>
+    <div class="input-send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="preview.html" class="nav-item">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22" fill="#142E0F" stroke="none"/></svg>
+      </div>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="chat.html" class="nav-item active" aria-current="page" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <div class="nav-dot"></div>
+      </div>
+      <span class="nav-label">Chat</span>
+    </a>
+    <a href="progress.html" class="nav-item">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <span class="nav-label">Progress</span>
+    </a>
+  </nav>
+
+</div>
+
+<script>
+(function() {
+  // ── Helpers ────────────────────────────────────────────────
+  const AV = `<div class="msg-cardi-avatar"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" stroke="#C7B9FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
+
+  function cardi(text, time, extra = '') {
+    return `<div class="msg-cardi">${AV}<div><div class="msg-cardi-bubble"><div class="msg-cardi-text">${text}</div></div>${extra}<div class="msg-time">${time}</div></div></div>`;
+  }
+  function user(text, time) {
+    return `<div class="msg-user"><div class="msg-user-bubble"><div class="msg-user-text">${text}</div></div><div class="msg-time">${time}</div></div>`;
+  }
+  function microstep(body) {
+    return `<div class="microstep-card"><div class="microstep-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#3a4a0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="4" fill="#142E0F" opacity="0.12" stroke="none"/><circle cx="12" cy="12" r="2.5" fill="#142E0F" stroke="none"/></svg></div><div><div class="microstep-card-title">Today's microstep · added</div><div class="microstep-card-body">${body}</div></div></div>`;
+  }
+
+  // ── Evening wrap-up mode ───────────────────────────────────
+  const eveningRaw = localStorage.getItem('carda_evening');
+  if (eveningRaw) {
+    const ev = JSON.parse(eveningRaw);
+    const protein   = JSON.parse(localStorage.getItem('carda_protein') || 'null');
+    const hydration = JSON.parse(localStorage.getItem('carda_hydration') || 'null');
+    const ci        = JSON.parse(localStorage.getItem('carda_checkin') || 'null');
+    const logged    = protein ? protein.logged : 68;
+    const goal      = protein ? protein.goal : 100;
+    const glasses   = hydration ? hydration.glasses : 0;
+    const hitProtein = logged >= goal;
+    const highHunger = ev.hungerScore >= 7;
+    const hasFoodNoise = ev.foodNoise && ev.foodNoise.length > 0 && !ev.foodNoise.includes('None today');
+
+    // Context strip
+    const severityPts = { good:30, watch:22, moderate:15, high:8 };
+    let raw2 = ci ? (severityPts[ci.severity] || 0) : 0;
+    if (protein) raw2 += logged >= goal ? 35 : logged > 0 ? 15 : 0;
+    const thrive = raw2 === 0 ? 0 : Math.round((raw2/65)*100);
+    document.getElementById('context-strip').innerHTML = `
+      <div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-lime);"></div><span class="ctx-pill-text">Thrive ${thrive} today</span></div>
+      <div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-sky);"></div><span class="ctx-pill-text">${logged}g protein</span></div>
+      <div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-plum);"></div><span class="ctx-pill-text">${glasses} / 8 glasses</span></div>
+      <div class="ctx-pill"><div class="ctx-pill-dot" style="background:rgba(255,255,255,0.45);"></div><span class="ctx-pill-text">Hunger ${ev.hungerScore}/10</span></div>`;
+
+    // Opening
+    let opening;
+    if (highHunger) {
+      opening = `Hey Bexli — I read your wrap-up. Hunger at ${ev.hungerScore}/10 tonight is worth paying attention to. On GLP-1 therapy that can mean your fueling window earlier in the day was too tight. <strong>Tell me more about how eating felt today.</strong>`;
+    } else if (hasFoodNoise) {
+      const noise = ev.foodNoise.join(', ').toLowerCase();
+      opening = `Hey Bexli. You flagged ${noise} in your wrap-up — I want to make sure we talk about that. Food noise is really common, especially in the early weeks. <strong>What do you think was driving it today?</strong>`;
+    } else if (hitProtein) {
+      opening = `Nice work today, Bexli. You hit your protein floor, wrapped up your wind-down checklist, and took a moment to reflect. That's a complete day. <strong>How are you feeling going into tomorrow?</strong>`;
+    } else {
+      opening = `Hey Bexli — good to see you wrapped up Day 14. Protein was at ${logged}g today, which is ${goal - logged}g short of your floor. Not a big deal for one day, but let's make sure tomorrow we front-load a bit. <strong>How are you feeling tonight?</strong>`;
+    }
+    document.getElementById('cardi-opening-text').innerHTML = opening;
+
+    // Thread
+    let thread = '';
+    if (highHunger) {
+      thread += user("I think I didn't eat enough earlier in the day. The GLP-1 suppressed my appetite so I just... didn't.", "9:05 PM");
+      thread += cardi(`That's one of the trickiest parts of GLP-1 therapy — the medication doing its job can work against your protein goals. <strong>Set a fuel reminder for 9am and 1pm tomorrow</strong>, even if you're not hungry. Small amounts, high protein. Your body still needs it.`, "9:06 PM");
+      thread += user("Okay. Should I eat something now?", "9:08 PM");
+      thread += cardi(`If you're genuinely hungry, yes — a small snack before bed is fine. Try something with protein: cottage cheese, a hard-boiled egg, or Greek yogurt. Avoid anything high in fat or sugar this late. Keep it under 150 calories and you'll sleep fine.`, "9:09 PM");
+    } else if (hasFoodNoise) {
+      thread += user("I think it was stress honestly. Work was really hard today.", "9:05 PM");
+      thread += cardi(`That makes complete sense. Stress spikes cortisol, which directly increases food cravings — it's not a willpower issue, it's biology. The fact that you noticed it matters. <strong>What usually helps you decompress when work is stressful?</strong>`, "9:06 PM");
+      thread += user("Honestly, just talking helps. Or going for a walk.", "9:09 PM");
+      thread += cardi(`Both are great. Walking after dinner especially — even 10 minutes helps regulate blood sugar and reduces the urge to eat for comfort. Add that to your wind-down routine when stress is high. You handled today well, Bexli.`, "9:10 PM");
+    } else if (hitProtein) {
+      thread += user("Pretty good actually! Tired but in a good way after the session.", "9:05 PM");
+      thread += cardi(`That's the best kind of tired. Your body did real work today and your fueling backed it up. Sleep is where the recovery actually happens now — those sleep checklist items you ticked off matter more than people realise. <strong>What's your plan for tomorrow morning?</strong>`, "9:06 PM");
+      thread += user("I'll do the check-in again and probably a protein smoothie early.", "9:08 PM");
+      thread += cardi(`Perfect. Get that protein in within an hour of waking up — it sets your muscle protein synthesis in motion for the whole day. Day 15 is going to be a good one.`, "9:09 PM");
+    } else {
+      thread += user("A bit tired. I think I need to eat better tomorrow.", "9:05 PM");
+      thread += cardi(`That self-awareness is valuable. One tip: don't wait until you're hungry to eat tomorrow — the GLP-1 will suppress that signal. Set a timer for 9am and eat something with protein regardless of hunger. Even half a portion is better than skipping. <strong>What sounds doable for breakfast?</strong>`, "9:06 PM");
+      thread += user("Greek yogurt is easy. I have it at home.", "9:08 PM");
+      thread += cardi(`Greek yogurt is ideal — high protein, easy on the stomach, quick to eat. Add some berries if you have them. That's a solid start. Sleep well, Bexli. See you tomorrow.`, "9:09 PM");
+    }
+    document.getElementById('conversation-thread').innerHTML = thread;
+
+    // Suggested chips
+    const chips = highHunger
+      ? ['What should I eat tonight?', 'Fueling tips for tomorrow', 'Why am I hungrier at night?', 'Set a fuel reminder']
+      : hasFoodNoise
+      ? ['More on food noise', 'Stress and GLP-1s', 'Walk after dinner?', "Tomorrow's plan"]
+      : hitProtein
+      ? ["What's next this week?", 'Recovery tips', 'How did I do this week?', 'Day 15 preview']
+      : ['Protein tips for tomorrow', 'Easy breakfast ideas', 'How to front-load protein', "This week's progress"];
+    document.getElementById('suggested-wrap').innerHTML = chips.map(c => `<div class="suggest-chip">${c}</div>`).join('');
+    return;
+  }
+
+  // ── Read check-in ──────────────────────────────────────────
+  const raw = localStorage.getItem('carda_checkin');
+  const ci = raw ? JSON.parse(raw) : null;
+  const severity   = ci ? ci.severity : 'moderate';
+  const nauseaScore = ci ? ci.nauseaScore : 6;
+  const appetiteChoice = ci ? ci.appetiteChoice : 'less';
+  const symptoms   = ci ? (ci.symptoms || []) : [];
+  const concerningSymptoms = symptoms.filter(s => s !== 'Feeling good');
+  const feelingGood = symptoms.includes('Feeling good');
+
+  const appetiteLabels = { well:'ate well', less:'ate less than usual', barely:'barely ate', skipped:'skipped most meals' };
+
+  // ── Context strip ──────────────────────────────────────────
+  const nauseaColor = nauseaScore >= 7 ? 'var(--c-citrus)' : nauseaScore >= 4 ? 'var(--c-plum)' : 'var(--c-sky)';
+  const nauseaLabel = nauseaScore > 0 ? `Nausea ${nauseaScore}/10 today` : 'No nausea reported';
+  let pillsHTML = `
+    <div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-lime);"></div><span class="ctx-pill-text">Thrive Score 72 ↑</span></div>
+    <div class="ctx-pill"><div class="ctx-pill-dot" style="background:${nauseaColor};"></div><span class="ctx-pill-text">${nauseaLabel}</span></div>`;
+  if (appetiteChoice === 'skipped' || appetiteChoice === 'barely') {
+    pillsHTML += `<div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-citrus);"></div><span class="ctx-pill-text">${appetiteChoice === 'skipped' ? 'Skipped meals' : 'Very low intake'}</span></div>`;
+  } else {
+    pillsHTML += `<div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-sky);"></div><span class="ctx-pill-text">Protein 68g / 100g</span></div>`;
+  }
+  if (concerningSymptoms.length > 0) {
+    pillsHTML += `<div class="ctx-pill"><div class="ctx-pill-dot" style="background:rgba(255,255,255,0.45);"></div><span class="ctx-pill-text">${concerningSymptoms.slice(0,2).join(', ')}${concerningSymptoms.length > 2 ? ' +more' : ''}</span></div>`;
+  }
+  pillsHTML += `<div class="ctx-pill"><div class="ctx-pill-dot" style="background:var(--c-plum);"></div><span class="ctx-pill-text">Session 2:00 PM</span></div>`;
+  document.getElementById('context-strip').innerHTML = pillsHTML;
+
+  // ── Opening message ────────────────────────────────────────
+  let openingMsg = '';
+  if (severity === 'high') {
+    const reason = nauseaScore >= 7 ? `nausea at ${nauseaScore}/10` : `nausea at ${nauseaScore}/10 and you ${appetiteLabels[appetiteChoice] || 'had very low intake'}`;
+    const extra = concerningSymptoms.length > 0 ? ` You also flagged ${concerningSymptoms.join(', ')} — that's a lot to manage.` : '';
+    openingMsg = `Good morning, Bexli. Your check-in flagged ${reason}.${extra} I've already let Coach Haley know before your 2pm session. <strong>How are you feeling right now?</strong>`;
+  } else if (severity === 'moderate') {
+    const parts = [];
+    if (nauseaScore >= 4) parts.push(`nausea at ${nauseaScore}/10`);
+    if (appetiteChoice === 'skipped') parts.push('skipped most meals');
+    else if (appetiteChoice === 'barely') parts.push('barely ate yesterday');
+    if (concerningSymptoms.length >= 3) parts.push(`${concerningSymptoms.length} symptoms flagged`);
+    const followUp = (appetiteChoice === 'skipped' || appetiteChoice === 'barely') ? " Skipping meals on GLP-1 therapy can amplify nausea and slow muscle recovery — let's find something easy to get in today." : " Let's set the day up right.";
+    openingMsg = `Morning, Bexli. Your check-in came through — ${parts.join(', ')}.${followUp} <strong>What's on your mind?</strong>`;
+  } else if (severity === 'watch') {
+    if (appetiteChoice === 'less') {
+      openingMsg = `Morning, Bexli. Check-in looked mostly okay — ${nauseaScore > 0 ? `nausea at ${nauseaScore}/10` : 'nausea was low'}, though appetite was a bit off yesterday. Let's make sure you hit your protein today even in smaller amounts. <strong>How are you feeling?</strong>`;
+    } else {
+      openingMsg = `Morning, Bexli. A few things flagged in your check-in — ${concerningSymptoms.slice(0,3).join(', ')}. Nothing alarming, but worth keeping an eye on. <strong>How's your morning going?</strong>`;
+    }
+  } else {
+    const opener = feelingGood ? `You're feeling good today — and your vitals back that up.` : `Check-in looked strong — ${nauseaScore > 0 ? `nausea at just ${nauseaScore}/10` : 'no nausea'}, vitals normal.`;
+    openingMsg = `Good morning, Bexli! ${opener} You're set up well. <strong>What are you focused on today?</strong>`;
+  }
+  document.getElementById('cardi-opening-text').innerHTML = openingMsg;
+
+  // ── Conversation thread ────────────────────────────────────
+  let thread = '';
+
+  if (severity === 'high') {
+    thread += user("A bit better than this morning, but still pretty rough. I'm not sure I should go to the 2pm session at all.", "8:31 AM");
+    thread += cardi("That's a valid concern. If your nausea is still above a 6 by 1pm, it's okay to skip today — one missed session won't undo your progress. If you do feel up for it, light movement at low intensity can actually help settle GI symptoms. Coach Haley will check in with you first. <strong>Have you been able to keep anything down this morning?</strong>", "8:32 AM");
+    thread += user("Just water. I can't really stomach anything solid right now.", "8:36 AM");
+    thread += cardi(`Don't force it. Start with small sips of water with electrolytes — if that stays down, try something bland: a few crackers, plain rice, half a banana. Even 10–15g of protein is better than nothing right now. <strong>Skip the protein shake today</strong> — the fat content can make nausea worse. I've added a microstep for you.`, "8:37 AM", microstep("Sip electrolytes first, then try a few crackers before noon — don't force a full meal."));
+  } else if (severity === 'moderate') {
+    thread += user("Yeah the nausea is real today. I did manage to eat something small this morning though.", "8:31 AM");
+    thread += cardi(`That's exactly the right call — eating something small is always better than nothing on a high-nausea day. For the 2pm session, eat again about <strong>90 minutes before, not closer</strong>. A tighter window usually makes things worse. What did you have this morning?`, "8:32 AM");
+    thread += user("Just crackers and about half a protein shake. Maybe 20g total.", "8:35 AM");
+    thread += cardi(`Solid start for a rough morning. Try to get another 25–30g in before your session — Greek yogurt or a small piece of chicken both sit well on nausea days. I'd also have Haley run you at <strong>65–70% intensity</strong> instead of full effort today. That still builds muscle without taxing a stressed GI system.`, "8:36 AM", microstep("Eat 25–30g protein before 1pm — Greek yogurt or chicken work well on nausea days."));
+  } else if (severity === 'watch') {
+    thread += user("Yeah, appetite was pretty low yesterday. Feeling okay this morning though — maybe a 7/10.", "8:31 AM");
+    thread += cardi(`7/10 is workable. The lower appetite yesterday is worth paying attention to — you don't want to go into a session under-fueled two days running. <strong>What's your plan for lunch before the 2pm?</strong>`, "8:32 AM");
+    thread += user("I was thinking a smoothie? I can usually stomach those.", "8:35 AM");
+    thread += cardi(`Perfect. Add a scoop of protein powder and some Greek yogurt to it — that'll get you to 30g easily without a lot of volume. That's exactly what you need going into resistance training. Your muscle recovery depends on having that fuel available.`, "8:36 AM", microstep("Add protein powder + Greek yogurt to your pre-session smoothie — target 30g before 1pm."));
+  } else {
+    // good
+    thread += user("Feeling pretty good honestly! Maybe a 9/10 today. I was thinking about pushing harder.", "8:31 AM");
+    thread += cardi(`Love to hear it. Your HRV this morning is looking solid and your recovery from Monday was strong. I'd say <strong>go for 80% effort today</strong> — your body is adapting well and you can handle a harder push. Just make sure you fuel properly beforehand.`, "8:32 AM");
+    thread += user("Nice! What should I eat before the session to make the most of it?", "8:35 AM");
+    thread += cardi(`On a strong day like today, go for a complete meal about 2 hours out — lean protein plus a complex carb. Chicken and rice, eggs and sweet potato, something like that. Aim for 40g protein and 50g carbs. You'll have the energy for a solid lift and your muscles will thank you in the recovery window after.`, "8:36 AM", microstep("Full pre-session meal 2 hours out — 40g protein + complex carbs for maximum output today."));
+  }
+
+  document.getElementById('conversation-thread').innerHTML = thread;
+
+  // ── Suggested replies ──────────────────────────────────────
+  const chipSets = {
+    high:     ['Is it safe to train today?', "What can I eat that won't worsen nausea?", 'Message Coach Haley', 'When will this get better?'],
+    moderate: ['What should I eat today?', 'Will nausea affect my session?', 'Protein tips for low appetite', 'Show my nausea trend'],
+    watch:    ["How's my protein tracking?", 'Tips for eating more today', 'What should I focus on?', "Show this week's progress"],
+    good:     ['What should I focus on today?', "How am I tracking this week?", "Tips for today's session", 'When does dose stabilise?'],
+  };
+  const chips = chipSets[severity] || chipSets.moderate;
+  document.getElementById('suggested-wrap').innerHTML = chips.map(c => `<div class="suggest-chip">${c}</div>`).join('');
+})();
+
+// ── Chip interaction engine (runs regardless of conversation branch) ──
+(function() {
+  const AV = `<div class="msg-cardi-avatar"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" stroke="#C7B9FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
+  function cardi(text, time) {
+    return `<div class="msg-cardi">${AV}<div><div class="msg-cardi-bubble"><div class="msg-cardi-text">${text}</div></div><div class="msg-time">${time}</div></div></div>`;
+  }
+  function user(text, time) {
+    return `<div class="msg-user"><div class="msg-user-bubble"><div class="msg-user-text">${text}</div></div><div class="msg-time">${time}</div></div>`;
+  }
+
+  // ── Chip interaction engine ───────────────────────────────────
+  const responses = {
+    // Evening / food noise
+    'More on food noise': {
+      cardi: `Food noise is the mental chatter around food — intrusive thoughts, urges to eat when you're not hungry, fixation on what's in the fridge. GLP-1 medications reduce this for most people over time, but the first weeks can feel unsettled as your body adjusts. Noticing it and naming it is already the skill. <strong>What does it feel like for you — is it thoughts, urges, or something else?</strong>`,
+      next: ['Is it cravings or hunger?', 'Coping strategies', 'How long until it reduces?', 'Back to today']
+    },
+    'Stress and GLP-1s': {
+      cardi: `When cortisol spikes from stress, your brain seeks high-calorie, rewarding foods — that's evolutionary. GLP-1 medications reduce the food reward signal but don't fully override cortisol. On high-stress days the cravings cut through more. The practical fix: have a non-food decompression routine ready <em>before</em> the craving peaks. Walking is perfect — it metabolises cortisol directly.`,
+      next: ['Walk after dinner?', 'Other decompression tools', "Tomorrow's plan", 'Back to today']
+    },
+    'Walk after dinner?': {
+      cardi: `Yes — one of the most evidence-backed habits you can build. Even 10–15 minutes at an easy pace does three things: lowers blood sugar after eating, metabolises cortisol, and reduces food noise for most people. No pace or distance needed — just movement. Make it feel like decompression, not exercise.`,
+      next: ['Best time to go?', "Tomorrow's plan", 'How am I doing overall?', 'Back to today']
+    },
+    "Tomorrow's plan": {
+      cardi: `Same as today — with one addition. When stress hits tomorrow, go for the walk <em>before</em> you open the fridge. That gap between the urge and the action is where the habit lives. Hit your protein floor, do your morning check-in, and rest well tonight. You handled today well, Bexli.`,
+      next: ['What time should I eat?', 'How was this week?', 'Back to today']
+    },
+    'Is it cravings or hunger?': {
+      cardi: `Good question — they feel similar but aren't. True hunger builds gradually and is satisfied by any food. Cravings are sudden, specific, and can feel urgent. On GLP-1 therapy, true hunger is suppressed — so if you're driven to eat, it's more likely food noise or emotional response. Does that match what you experienced today?`,
+      next: ['Coping strategies', 'Back to today']
+    },
+    'Coping strategies': {
+      cardi: `Three that work well alongside GLP-1 therapy: (1) Name it — say "this is food noise, not hunger." (2) Delay 10 minutes — the urge usually passes. (3) Move — even standing up and walking to another room helps. None of these require willpower, they just interrupt the pattern.`,
+      next: ['Walk after dinner?', "Tomorrow's plan", 'Back to today']
+    },
+    'How long until it reduces?': {
+      cardi: `For most people, food noise starts to quiet meaningfully in weeks 4–8 as the medication reaches steady state and your brain recalibrates its reward signals. Some people notice relief sooner. The fact that you're already naming it in week 2 puts you ahead — awareness shortens the adaptation window.`,
+      next: ['Coping strategies', "Tomorrow's plan", 'Back to today']
+    },
+    'Other decompression tools': {
+      cardi: `Beyond walking: cold water on your face (activates the dive reflex and slows cortisol fast), 4-7-8 breathing (inhale 4s, hold 7s, exhale 8s — 2 cycles is enough), or even texting a friend. The goal is a 10-minute circuit-breaker between the stress spike and the kitchen.`,
+      next: ['Walk after dinner?', "Tomorrow's plan", 'Back to today']
+    },
+    // Good severity
+    'What should I focus on today?': {
+      cardi: `Three things: fuel well before your 2pm session (lean protein + complex carbs, 2 hours out), push to about 80% effort since your recovery is solid, and hit your 100g protein floor by end of day. You're on a good trajectory — today is a chance to build on that.`,
+      next: ["Tips for today's session", "How am I tracking this week?", 'Back to today']
+    },
+    "How am I tracking this week?": {
+      cardi: `Really well. Protein floor hit 5 of the last 7 days, 2 of 3 sessions complete, and your check-in streak is at 14 days straight. Thrive Score is up 7 points from last week. You're in the habit-formation window where consistency compounds — keep going.`,
+      next: ["What's next this week?", 'Anything to watch?', 'Back to today']
+    },
+    "Tips for today's session": {
+      cardi: `For a high-performance day: eat 2 hours out (not closer), warm up fully at low intensity for 5–10 min, and aim for progressive overload — even one extra rep or slightly more weight than last week counts. Your muscles are primed to adapt right now. Let Coach Haley push you.`,
+      next: ['What to eat after?', 'Recovery tonight', 'Back to today']
+    },
+    'When does dose stabilise?': {
+      cardi: `For most people, the major adjustment window is weeks 2–6. You're in week 2 — the nausea and appetite variability is normal and typically peaks around weeks 3–4, then settles. By week 6–8 most people find their new normal. Your 7-day nausea trend is already down 40% from week 1, which is a great sign.`,
+      next: ['What to expect in week 3?', 'Am I on track?', 'Back to today']
+    },
+    'What to eat after?': {
+      cardi: `Post-session: aim for 30–40g protein within 2 hours. A chicken breast, Greek yogurt with protein powder, or a shake all work. Add some carbs if you pushed hard — sweet potato or fruit. That window is when your muscles absorb protein most efficiently.`,
+      next: ['Recovery tonight', 'Back to today']
+    },
+    'Recovery tonight': {
+      cardi: `Three non-negotiables for recovery: (1) 7–9 hours sleep — that's when muscle protein synthesis peaks. (2) Protein within 2 hours post-session if you haven't eaten. (3) Hydration — aim for 8 glasses by bed. Everything else is secondary to those three.`,
+      next: ['Sleep tips', 'Back to today']
+    },
+    // High hunger
+    'What should I eat tonight?': {
+      cardi: `If you're genuinely hungry, a small high-protein snack is fine — cottage cheese, a hard-boiled egg, or Greek yogurt. Keep it under 150 calories and avoid anything high in fat or sugar this late. That should take the edge off without disrupting sleep.`,
+      next: ['Why am I hungrier at night?', 'Fueling tips for tomorrow', 'Back to today']
+    },
+    'Fueling tips for tomorrow': {
+      cardi: `Front-load your protein tomorrow. Eat within an hour of waking, even if the GLP-1 is suppressing your appetite — set a reminder if you need to. Aim for 25–30g at breakfast, another 30g at lunch, and the rest through dinner. That structure prevents the evening hunger spike you had today.`,
+      next: ['What to eat for breakfast?', 'Back to today']
+    },
+    'Why am I hungrier at night?': {
+      cardi: `Two reasons: your GLP-1 effect wears off slightly in the late evening, and if you under-fuelled during the day — which the medication often causes — your body catches up at night. The fix is consistent protein through the day, not just when you're hungry.`,
+      next: ['Fueling tips for tomorrow', 'Back to today']
+    },
+    'Set a fuel reminder': {
+      cardi: `Done — I'll remind you at 9am and 1pm tomorrow to eat, regardless of hunger. Even a small amount of protein at those windows prevents the under-fuelling cycle. You're making the right call addressing this now.`,
+      next: ['Fueling tips for tomorrow', 'What to eat for breakfast?', 'Back to today']
+    },
+    // Moderate
+    'What should I eat today?': {
+      cardi: `On a moderate nausea day: small amounts, high protein. Greek yogurt, a soft-boiled egg, or a small piece of chicken with crackers all work well. Eat 90 minutes before your 2pm session — not closer. Avoid anything high in fat or strong-smelling today.`,
+      next: ['Will nausea affect my session?', 'Protein tips for low appetite', 'Back to today']
+    },
+    'Will nausea affect my session?': {
+      cardi: `Moderate nausea doesn't have to mean skipping — but it means adjusting. Have Haley run you at 65–70% intensity instead of full effort today. That still builds muscle and keeps your streak going without overtaxing a stressed GI system. How you feel at 1pm will tell you more.`,
+      next: ['What if it gets worse?', 'Back to today']
+    },
+    'Protein tips for low appetite': {
+      cardi: `On low-appetite days, go for density over volume: Greek yogurt (15–17g, small portion), protein powder in a smoothie (25g, easy to drink), hard-boiled eggs (6g each). Spread them out every 3–4 hours rather than trying to eat a full meal. Small amounts consistently beats one big push.`,
+      next: ['What should I eat today?', 'Back to today']
+    },
+    'Show my nausea trend': {
+      cardi: `Your 7-day nausea average has dropped from 6.2 in Week 1 to 3.8 in Week 2 — a 40% reduction. Today's reading is slightly elevated but within the adjustment range for this dose. The trend line is heading in the right direction.`,
+      next: ['When will it fully settle?', 'Back to today']
+    },
+    // Watch
+    "How's my protein tracking?": {
+      cardi: `You've hit your 100g protein floor 5 of the last 7 days — strong for week 2. The two days you missed were both lower-appetite days, which makes sense. Today you're at 68g. You need about 32g more by end of day — a protein shake or chicken dinner gets you there easily.`,
+      next: ['Easy protein sources', 'Back to today']
+    },
+    'Tips for eating more today': {
+      cardi: `Three easy additions: (1) Protein powder in a smoothie — 25g with no volume. (2) Greek yogurt as a snack — 15–17g. (3) Chicken breast with dinner — 35g. On a low-appetite day, spread them out rather than trying to eat a large portion at once.`,
+      next: ['Timing tips', 'Back to today']
+    },
+    'What should I focus on?': {
+      cardi: `Today: hit your protein floor (you're about 32g away), go into the 2pm session fuelled even if appetite is low, and get your 8 glasses. Your check-in streak is strong — keep it rolling. Small wins compound.`,
+      next: ["How's my protein tracking?", 'Back to today']
+    },
+    "Show this week's progress": {
+      cardi: `This week: 7 check-ins, protein hit 5/7 days, 2 sessions complete, Thrive Score up 7 points. Weight down 1.8 lbs with lean mass holding. You're building real habits, Bexli.`,
+      next: ["What's next this week?", 'Back to today']
+    },
+    // High severity
+    'Is it safe to train today?': {
+      cardi: `With nausea this high, it's your call — but here's the framework: if you can keep fluids and a small snack down by 1pm, light movement at 50–60% effort is okay and may help settle GI symptoms. If you're still rough at 1pm, skip it. One missed session is nothing in a 56-day phase.`,
+      next: ['Light alternatives', 'Message Coach Haley', 'Back to today']
+    },
+    "What can I eat that won't worsen nausea?": {
+      cardi: `Best options on a high-nausea day: plain crackers, white rice, banana, plain toast, cold Greek yogurt, soft-boiled eggs. Avoid: fatty foods, strong smells, protein shakes (fat content can worsen it), spicy food. Eat cold or room temp — hot food can intensify nausea.`,
+      next: ['Is it safe to train today?', 'Back to today']
+    },
+    'Message Coach Haley': {
+      cardi: `I've already flagged your check-in to Haley — she knows nausea is high today and will check in with you before the session. If you want to reach her directly, tap the message icon on her session screen. You're covered.`,
+      next: ['Back to today', 'When will this get better?']
+    },
+    'When will this get better?': {
+      cardi: `High-nausea days are most common in weeks 2–4. Most people see a meaningful reduction by week 6–8 as the body adapts to the dose. Your week 2 average is already 40% lower than week 1 — you're on the right trajectory. This week is likely near the peak.`,
+      next: ['What helps most?', 'Back to today']
+    },
+    // Phase complete
+    "What's next this week?": {
+      cardi: `Day 15 tomorrow — third resistance session of the week if you're on schedule. Focus on hitting 100g protein, keep the morning check-in streak going, and use your evening wrap-up. Week 3 starts Thursday — that's when the habit layer really starts to solidify.`,
+      next: ['What changes in week 3?', 'Recovery tips', 'Back to today']
+    },
+    'Recovery tips': {
+      cardi: `Three non-negotiables: (1) 7–9 hours sleep — muscle protein synthesis peaks overnight. (2) 30–40g protein within 2 hours post-session. (3) 8 glasses of water — you're at 4 right now. Everything else is secondary to those three.`,
+      next: ['Sleep tips', 'Back to today']
+    },
+    'How did I do this week?': {
+      cardi: `Strong week. 7 check-ins, 5 protein days, 2 sessions complete, Thrive Score up 7 points. Weight down 1.8 lbs with lean mass holding. You're in the compounding zone now — keep going.`,
+      next: ["What's next this week?", 'Back to today']
+    },
+    'Day 15 preview': {
+      cardi: `Day 15: third session of the week — your body will be in recovery mode from today's effort. Fuel well tonight and prioritise sleep. Morning check-in as usual. Tomorrow's Thrive Score will reflect everything you did today.`,
+      next: ['Recovery tips', 'What to eat tonight?', 'Back to today']
+    },
+    // Shared
+    'Back to today': {
+      cardi: `You handled today well, Bexli. Rest up — your muscles rebuild overnight and good sleep is part of the protocol. See you in the morning check-in.`,
+      next: ['Thanks Cardi']
+    },
+    'Thanks Cardi': {
+      cardi: `Anytime. That's what I'm here for. Sleep well.`,
+      next: []
+    },
+    'What changes in week 3?': {
+      cardi: `Week 3 is where the habits stop feeling effortful. Check-ins become automatic, protein targets feel less like tracking and more like routine, and your body will start to visibly adapt. Session intensity goes up slightly. You'll also notice the nausea pattern becoming more predictable, which makes it easier to manage.`,
+      next: ['Anything to prepare?', 'Back to today']
+    },
+    'Sleep tips': {
+      cardi: `For recovery sleep: same bedtime every night (within 30 min), room cool (65–68°F), no screens 20 min before bed, and your wind-down checklist from the evening wrap-up. Your GLP-1 dose works better with consistent sleep — it's not just recovery, it's part of the protocol.`,
+      next: ['Back to today']
+    },
+    'What to expect in week 3?': {
+      cardi: `Week 3: habits start to feel automatic, session intensity goes up slightly, and nausea becomes more predictable. Most people hit a mini-plateau in weight around week 3–4 — it's not stalling, it's your body redistributing. Stay consistent with protein and training and it breaks through.`,
+      next: ['Am I on track?', 'Back to today']
+    },
+    'Am I on track?': {
+      cardi: `Yes. 14-day check-in streak, 11/14 protein days, 5 sessions, Thrive Score up 17 points from Day 1. You're tracking ahead of the Phase 1 average for this point. The target is a score of 85 by day 56 — you're well set up to hit that.`,
+      next: ['Back to today']
+    },
+    'What if it gets worse?': {
+      cardi: `If nausea climbs above a 7 or you can't keep fluids down, skip the session and rest. Message Coach Haley directly. If it's been above 8 for 2+ days or you're experiencing vomiting, contact the clinical team — that's what they're there for. But a 5–6 on a training day is manageable with the adjustments we talked about.`,
+      next: ['Message Coach Haley', 'Back to today']
+    },
+    'What helps most?': {
+      cardi: `Evidence-based: small sips of cold water or electrolytes, ginger (tea, chews, or capsules), eating cold food rather than hot, keeping meals small and frequent. Rest more than you think you need to. The body is doing significant work adapting to the medication — that takes energy.`,
+      next: ['Back to today']
+    },
+    'Light alternatives': {
+      cardi: `If the session feels like too much: a 20-minute walk at easy pace still counts as movement and maintains your streak mentally. Gentle stretching or mobility work is also fine. The goal is just keeping the routine — the intensity will come back when your body is ready.`,
+      next: ['Back to today']
+    },
+    'Anything to watch?': {
+      cardi: `One thing to keep an eye on: protein consistency through the weekend. It typically dips when routine loosens up. Pre-planning one or two easy protein sources (Greek yogurt, eggs, deli chicken) keeps you on track without effort. Other than that — you're solid.`,
+      next: ['Protein tips', 'Back to today']
+    },
+    'Protein tips': {
+      cardi: `Easiest wins: Greek yogurt (15–17g, easy to eat anytime), protein powder in coffee or a smoothie (25g invisible), chicken breast (35g, meal staple), cottage cheese (14g, late-night option). If you hit those four across the day you're at 90g before dinner.`,
+      next: ['Back to today']
+    },
+    'Timing tips': {
+      cardi: `Best protein timing: within an hour of waking (kicks off muscle protein synthesis for the day), 90 minutes before training, and within 2 hours post-session. The rest fills in between. Don't wait until you're hungry — the GLP-1 suppresses that signal too reliably to trust it.`,
+      next: ['Back to today']
+    },
+    'Easy protein sources': {
+      cardi: `Go-to options that don't require much prep or appetite: Greek yogurt (15–17g), string cheese (7g each), hard-boiled eggs (6g each), cottage cheese (14g), rotisserie chicken, protein powder in anything liquid. None of these require a full meal mindset.`,
+      next: ['Back to today']
+    },
+    'When will it fully settle?': {
+      cardi: `Most people hit a stable baseline around week 6–8. The nausea pattern becomes predictable — usually mild in the morning, better by afternoon. By week 10 most people barely notice it. Your trend is already pointing that way.`,
+      next: ['Back to today']
+    },
+    'What to eat for breakfast?': {
+      cardi: `Best options for a light, high-protein breakfast: Greek yogurt with berries (15–17g), 2 scrambled eggs (12g, fast), half a protein shake (15–20g if food feels hard). Eat within 60 minutes of waking even if you're not hungry — it sets the metabolic tone for the whole day.`,
+      next: ['Back to today']
+    },
+    'How am I doing overall?': {
+      cardi: `14-day check-in streak, Thrive Score up 17 points from Day 1, 11/14 protein days, 5 sessions. Weight down 6.2 lbs with lean mass intact. You're building the habits that make the medication work long-term. Strong start, Bexli.`,
+      next: ['Back to today']
+    },
+    'Anything to prepare?': {
+      cardi: `For week 3: stock easy protein sources so you don't have to think about it, set your 9am and 1pm fuel reminders if you haven't, and decide in advance what to do on your rest day so the routine doesn't slip. That's it — the work is already in place.`,
+      next: ['Back to today']
+    },
+    "What can I eat that won't worsen nausea?": {
+      cardi: `Stick to low-fat, low-fibre foods today — plain crackers, dry toast, boiled eggs, plain rice, banana. Avoid anything greasy, spicy, or with strong smells. Cold or room-temp foods are usually easier than hot. Small amounts every couple of hours beats trying to eat a full meal.`,
+      next: ['Protein tips for low appetite', 'When will this get better?', 'Back to today']
+    },
+    "Show this week's progress": {
+      cardi: `Week 2 snapshot: you hit protein goal 4 out of 7 days, completed 2 of 3 sessions, and your Thrive Score averaged 68 — up from 62 last week. The nausea you flagged today is a blip, not a trend. You're moving in the right direction.`,
+      next: ['Am I on track?', 'Back to today']
+    },
+    'How am I tracking this week?': {
+      cardi: `Really well. You're on Day 14, protein goal hit most days, sessions completed, and your Thrive Score is trending up week-over-week. The habits are sticking — that's the hard part and you're doing it.`,
+      next: ['Am I on track?', "What's next this week?", 'Back to today']
+    },
+    "Tips for today's session": {
+      cardi: `On a strong day: warm up for 8–10 minutes instead of rushing in, aim for 80% effort rather than max — you'll recover faster and get more out of the next session too. Log your working weights so you can benchmark next week. Eat 40g protein within 45 minutes after.`,
+      next: ['What to eat after?', 'Recovery tonight', 'Back to today']
+    },
+    "What's next this week?": {
+      cardi: `You're in the final stretch of Phase 1. Focus on finishing strong: hit protein every day, complete your last session, and do the evening wrap-up tonight. That sets you up for Phase 2 with real momentum going in.`,
+      next: ['Am I on track?', 'Back to today']
+    },
+    'Protein tips for tomorrow': {
+      cardi: `Front-load tomorrow — get 30g in before 10am before your appetite suppression kicks in. Greek yogurt with protein powder is fast and easy. Then aim for another 30–35g at lunch and 30g at dinner. That hits your 100g without having to force a big meal at night.`,
+      next: ['Easy protein sources', 'What to eat for breakfast?', 'Back to today']
+    },
+    'Easy breakfast ideas': {
+      cardi: `Quick high-protein breakfasts: Greek yogurt + berries (20g), 3 scrambled eggs + slice of toast (22g), cottage cheese + fruit (18g), protein smoothie with milk (30g+). All under 10 minutes. Pick one that sounds appealing and you're already ahead for the day.`,
+      next: ['How to front-load protein', 'Back to today']
+    },
+    'How to front-load protein': {
+      cardi: `Eat your biggest protein meal before noon. GLP-1 suppresses appetite more as the day goes on — by dinner it can feel nearly impossible to hit targets. Getting 40–50g in by lunch makes the rest of the day much easier. Set a 9am reminder to eat something with protein before the hunger signal disappears.`,
+      next: ['Easy protein sources', 'Back to today']
+    },
+    "This week's progress": {
+      cardi: `Week 2 summary: Thrive Score averaging 68 (up from 62), protein goal hit 4/7 days, 2 sessions completed. Nausea has been present but manageable — that's normal for this stage. You're building the foundation. Phase 2 starts looking different.`,
+      next: ["What's next this week?", 'Am I on track?', 'Back to today']
+    },
+  };
+
+  function scrollChat() {
+    const el = document.getElementById('chat');
+    if (el) el.scrollTop = el.scrollHeight;
+  }
+
+  function attachChipHandlers(wrapEl) {
+    wrapEl.querySelectorAll('.suggest-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.textContent.trim();
+        const response = responses[text];
+        if (!response) return;
+
+        const thread = document.getElementById('conversation-thread');
+        wrapEl.innerHTML = '';
+
+        const now = new Date();
+        const t = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+        thread.insertAdjacentHTML('beforeend', user(text, t));
+        scrollChat();
+
+        const typingId = 'typing-' + Date.now();
+        thread.insertAdjacentHTML('beforeend',
+          `<div class="msg-cardi" id="${typingId}">${AV}<div><div class="msg-cardi-bubble"><div class="msg-cardi-text" style="letter-spacing:0.1em; color:var(--c-dg-30);">···</div></div></div></div>`
+        );
+        scrollChat();
+
+        setTimeout(() => {
+          const el = document.getElementById(typingId);
+          if (el) el.remove();
+          thread.insertAdjacentHTML('beforeend', cardi(response.cardi, t));
+          scrollChat();
+          if (response.next && response.next.length > 0) {
+            wrapEl.innerHTML = response.next.map(c => `<div class="suggest-chip">${c}</div>`).join('');
+            attachChipHandlers(wrapEl);
+          }
+        }, 900);
+      });
+    });
+  }
+
+  attachChipHandlers(document.getElementById('suggested-wrap'));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Fuel Check-In</title>
+<style>
+@font-face { font-family:"Circular Std"; src:url("design-system/fonts/CircularStd-Book.otf") format("opentype"); font-weight:400; font-display:swap; }
+@font-face { font-family:"Circular Std"; src:url("design-system/fonts/CircularStd-Medium.otf") format("opentype"); font-weight:500; font-display:swap; }
+@font-face { font-family:"Circular Std"; src:url("design-system/fonts/CircularStd-Bold.otf") format("opentype"); font-weight:700; font-display:swap; }
+@font-face { font-family:"Circular Std"; src:url("design-system/fonts/CircularStd-Black.otf") format("opentype"); font-weight:900; font-display:swap; }
+@font-face { font-family:"ABC Marist"; src:url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype"); font-weight:600; font-display:swap; }
+
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --c-dark-green:#142E0F; --c-lime:#D8E73C; --c-citrus:#FB6E28;
+  --c-plum:#C7B9FF; --c-sky:#97DDF7; --c-natural:#F4F0EB;
+  --c-dg-08:rgba(20,46,15,0.08); --c-dg-16:rgba(20,46,15,0.16);
+  --c-dg-30:rgba(20,46,15,0.30); --c-dg-60:rgba(20,46,15,0.60);
+  --c-white:#FFFFFF;
+  --font-display:"ABC Marist",Georgia,serif;
+  --font-sans:"Circular Std",-apple-system,BlinkMacSystemFont,sans-serif;
+  --ease-out:cubic-bezier(0.2,0.8,0.2,1);
+}
+html,body { background:#e8e4df; font-family:var(--font-sans); -webkit-font-smoothing:antialiased; display:flex; justify-content:center; min-height:100vh; padding:24px 0 48px; }
+.phone { width:390px; min-height:844px; background:var(--c-natural); border-radius:48px; overflow:hidden; box-shadow:0 32px 80px rgba(0,0,0,0.28),0 0 0 1px rgba(0,0,0,0.08); display:flex; flex-direction:column; position:relative; }
+
+/* Status bar */
+.status-bar { background:var(--c-dark-green); height:54px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 28px 8px; flex-shrink:0; }
+.status-time { font-weight:700; font-size:15px; color:#fff; letter-spacing:-0.01em; }
+.status-icons { display:flex; align-items:center; gap:6px; }
+
+/* Header */
+.app-header { background:var(--c-dark-green); padding:16px 24px 22px; flex-shrink:0; }
+.back-row { display:flex; align-items:center; gap:6px; margin-bottom:14px; opacity:0.6; text-decoration:none; }
+.back-row:hover { opacity:0.9; }
+.back-label { font-size:13px; font-weight:500; color:white; }
+.header-eyebrow { font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--c-lime); margin-bottom:6px; }
+.header-title { font-family:var(--font-display); font-weight:600; font-size:26px; line-height:1.1; letter-spacing:-0.01em; color:#fff; margin-bottom:4px; }
+.header-sub { font-size:13px; color:rgba(255,255,255,0.45); margin-bottom:16px; }
+
+/* Protein floor progress */
+.floor-row { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+.floor-logged { font-weight:900; font-size:20px; letter-spacing:-0.02em; color:#fff; transition:color 300ms; }
+.floor-logged.met { color:var(--c-lime); }
+.floor-label { font-size:12px; font-weight:500; color:rgba(255,255,255,0.40); transition:color 300ms; }
+.floor-label.met { color:var(--c-lime); }
+.floor-track { height:3px; border-radius:9999px; background:rgba(255,255,255,0.15); overflow:hidden; }
+.floor-fill { height:100%; border-radius:9999px; background:var(--c-lime); transition:width 350ms var(--ease-out); }
+
+/* Scroll */
+.scroll-area { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:130px; }
+.scroll-area::-webkit-scrollbar { display:none; }
+.content { padding:20px 16px 0; display:flex; flex-direction:column; gap:14px; }
+
+/* Hand rule intro */
+.hand-intro { display:flex; align-items:center; gap:10px; padding:12px 14px; background:rgba(216,231,60,0.08); border:1px solid rgba(216,231,60,0.20); border-radius:16px; }
+.hand-intro-text { font-size:13px; font-weight:400; color:var(--c-dark-green); line-height:1.4; }
+.hand-intro-text strong { font-weight:700; }
+
+/* ── Protein hero card ── */
+.protein-card {
+  background:var(--c-white);
+  border-radius:24px;
+  border:1.5px solid var(--c-dg-08);
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  overflow:hidden;
+}
+.protein-card-top {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:18px 18px 14px;
+}
+.protein-icon {
+  width:56px; height:56px;
+  border-radius:16px;
+  background:var(--c-dark-green);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.protein-icon svg { width:28px; height:28px; }
+.protein-meta { flex:1; }
+.protein-name {
+  font-family:var(--font-display);
+  font-weight:600; font-size:20px;
+  letter-spacing:-0.01em;
+  color:var(--c-dark-green);
+  margin-bottom:3px;
+}
+.protein-rule { font-size:13px; font-weight:400; color:var(--c-dg-30); }
+.protein-gram-badge {
+  font-weight:900; font-size:26px;
+  letter-spacing:-0.02em;
+  color:var(--c-dg-16);
+  transition:color 300ms, transform 200ms var(--ease-out);
+  min-width:44px;
+  text-align:right;
+}
+.protein-gram-badge.active { color:var(--c-dark-green); }
+.protein-gram-unit { font-size:14px; font-weight:500; color:var(--c-dg-30); }
+
+/* Portion stepper */
+.portion-row {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-top:1px solid var(--c-dg-08);
+}
+.portion-btn {
+  padding:14px 0;
+  background:none;
+  border:none;
+  border-right:1px solid var(--c-dg-08);
+  font-family:var(--font-sans);
+  font-weight:700;
+  font-size:17px;
+  color:var(--c-dg-30);
+  cursor:pointer;
+  transition:background 150ms, color 150ms;
+  -webkit-tap-highlight-color:transparent;
+}
+.portion-btn:last-child { border-right:none; }
+.portion-btn.selected {
+  background:var(--c-lime);
+  color:var(--c-dark-green);
+}
+.portion-btn:active { opacity:0.7; }
+
+/* ── Secondary 3-col grid ── */
+.secondary-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.secondary-card {
+  background:var(--c-white);
+  border-radius:20px;
+  border:1.5px solid var(--c-dg-08);
+  padding:14px 10px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+  transition:border-color 150ms, background 150ms, transform 80ms;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+  overflow:hidden;
+}
+.secondary-card:active { transform:scale(0.96); }
+.secondary-card.has-portion {
+  border-color:var(--c-lime);
+  background:rgba(216,231,60,0.07);
+}
+.sec-icon {
+  width:32px; height:32px;
+  border-radius:10px;
+  background:var(--c-natural);
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:2px;
+}
+.sec-icon svg { width:18px; height:18px; }
+.sec-name {
+  font-weight:700; font-size:12px;
+  color:var(--c-dark-green);
+  letter-spacing:0.01em;
+}
+.sec-amount {
+  font-weight:900; font-size:28px;
+  letter-spacing:-0.02em;
+  color:var(--c-dg-16);
+  line-height:1;
+  transition:color 200ms;
+}
+.secondary-card.has-portion .sec-amount { color:var(--c-dark-green); }
+.sec-unit {
+  font-size:10px; font-weight:500;
+  color:var(--c-dg-30);
+  text-align:center;
+  line-height:1.3;
+}
+.sec-tap {
+  font-size:10px;
+  color:var(--c-dg-16);
+  margin-top:2px;
+}
+.secondary-card.has-portion .sec-tap { color:var(--c-dg-30); }
+
+/* Ripple pulse on tap */
+@keyframes sec-pulse { 0%{opacity:0.3;transform:scale(0.8)} 100%{opacity:0;transform:scale(2)} }
+.sec-pulse { position:absolute; width:40px; height:40px; border-radius:50%; background:var(--c-lime); animation:sec-pulse 350ms var(--ease-out) forwards; pointer-events:none; }
+
+/* Hydration */
+.hydration-section {
+  background:var(--c-white);
+  border-radius:20px;
+  border:1px solid var(--c-dg-08);
+  padding:16px 18px;
+}
+.hydration-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.hydration-title { font-size:14px; font-weight:700; color:var(--c-dark-green); }
+.hydration-count { font-size:13px; font-weight:700; color:var(--c-dg-30); }
+.hydration-drops { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.h-drop {
+  width:32px; height:32px; border-radius:50%;
+  border:1.5px solid var(--c-sky);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:background 120ms, border-color 120ms;
+  flex-shrink:0;
+}
+.h-drop.filled { background:var(--c-sky); border-color:var(--c-sky); }
+.h-drop svg { width:14px; height:14px; }
+.hydration-goal { font-size:12px; color:var(--c-dg-30); margin-top:8px; }
+
+/* Summary strip */
+.summary-card {
+  background:var(--c-white);
+  border-radius:20px;
+  border:1px solid var(--c-dg-08);
+  padding:16px 18px;
+  display:flex; flex-direction:column; gap:10px;
+  animation:fadeUp 200ms var(--ease-out);
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.summary-row { display:flex; justify-content:space-between; align-items:center; }
+.summary-label { font-size:13px; font-weight:500; color:var(--c-dg-60); }
+.summary-value { font-size:14px; font-weight:700; color:var(--c-dark-green); }
+.summary-bar-track { height:6px; border-radius:9999px; background:var(--c-dg-08); overflow:hidden; }
+.summary-bar-fill { height:100%; border-radius:9999px; background:var(--c-lime); transition:width 400ms var(--ease-out); }
+.summary-met { font-size:13px; font-weight:700; color:#1e7a00; text-align:center; padding-top:2px; }
+
+/* Sticky bottom */
+.sticky-bottom { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to bottom,transparent,var(--c-natural) 28%); padding:20px 16px 28px; }
+.btn-primary { display:flex; align-items:center; justify-content:center; width:100%; background:var(--c-lime); color:var(--c-dark-green); font-family:var(--font-sans); font-weight:700; font-size:16px; letter-spacing:0.01em; border:none; border-radius:9999px; padding:18px 24px; cursor:pointer; transition:transform 100ms, box-shadow 140ms var(--ease-out), opacity 200ms; }
+.btn-primary:hover { box-shadow:0 4px 8px rgba(0,0,0,0.12); }
+.btn-primary:active { transform:scale(0.97); }
+.btn-primary:disabled { opacity:0.35; cursor:default; transform:none; box-shadow:none; }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="status-bar">
+    <span class="status-time">7:14 AM</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 0 0 0-4z"/></svg>
+    </div>
+  </div>
+
+  <div class="app-header">
+    <a href="preview.html" class="back-row">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span class="back-label">Home</span>
+    </a>
+    <div class="header-eyebrow">Fuel Check-In</div>
+    <div class="header-title">How did you fuel?</div>
+    <div class="header-sub">Use your hand as a portion guide</div>
+
+    <div class="floor-row">
+      <span class="floor-logged" id="hdr-logged">68g</span>
+      <span class="floor-label" id="hdr-label">32g to protein floor</span>
+    </div>
+    <div class="floor-track">
+      <div class="floor-fill" id="hdr-bar" style="width:68%"></div>
+    </div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="content">
+
+      <!-- Hand rule explainer -->
+      <div class="hand-intro">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--c-dark-green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.6;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="hand-intro-text">Tap your portion for each food group. <strong>Protein is your floor</strong> — aim for at least 1 fist every meal.</div>
+      </div>
+
+      <!-- Protein hero -->
+      <div class="protein-card">
+        <div class="protein-card-top">
+          <div class="protein-icon">
+            <!-- Fist icon -->
+            <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="11" width="18" height="12" rx="5" fill="white" opacity="0.9"/>
+              <rect x="5" y="13" width="4" height="10" rx="2" fill="white"/>
+              <rect x="7" y="7" width="5" height="7" rx="2.5" fill="white" opacity="0.9"/>
+              <rect x="13" y="6" width="5" height="7" rx="2.5" fill="white" opacity="0.9"/>
+              <rect x="19" y="7" width="4" height="7" rx="2" fill="white" opacity="0.9"/>
+            </svg>
+          </div>
+          <div class="protein-meta">
+            <div class="protein-name">Protein</div>
+            <div class="protein-rule">1 fist = ~27g protein</div>
+          </div>
+          <div>
+            <span class="protein-gram-badge" id="protein-grams">0</span><span class="protein-gram-unit">g</span>
+          </div>
+        </div>
+        <div class="portion-row" id="protein-row">
+          <button class="portion-btn selected" onclick="setProtein(0)">0</button>
+          <button class="portion-btn" onclick="setProtein(0.5)">½</button>
+          <button class="portion-btn" onclick="setProtein(1)">1</button>
+          <button class="portion-btn" onclick="setProtein(1.5)">1½</button>
+        </div>
+      </div>
+
+      <!-- Secondary 3-col -->
+      <div class="secondary-grid">
+
+        <!-- Veggies -->
+        <div class="secondary-card" id="veggies-card" onclick="cycle('veggies', this)">
+          <div class="sec-icon">
+            <!-- Palm / leaf -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22V12"/>
+              <path d="M12 12C12 8 9 5 5 5c0 4 3 7 7 7z"/>
+              <path d="M12 12c0-4 3-7 7-7-1 4-4 7-7 7z"/>
+            </svg>
+          </div>
+          <div class="sec-name">Veggies</div>
+          <div class="sec-amount" id="veggies-amount">0</div>
+          <div class="sec-unit">1 palm</div>
+          <div class="sec-tap" id="veggies-tap">tap to add</div>
+        </div>
+
+        <!-- Carbs -->
+        <div class="secondary-card" id="carbs-card" onclick="cycle('carbs', this)">
+          <div class="sec-icon">
+            <!-- Cupped hand / bowl -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 11c0 5 3.5 8 8 8s8-3 8-8"/>
+              <line x1="2" y1="11" x2="22" y2="11"/>
+            </svg>
+          </div>
+          <div class="sec-name">Carbs</div>
+          <div class="sec-amount" id="carbs-amount">0</div>
+          <div class="sec-unit">1 cupped hand</div>
+          <div class="sec-tap" id="carbs-tap">tap to add</div>
+        </div>
+
+        <!-- Fat -->
+        <div class="secondary-card" id="fat-card" onclick="cycle('fat', this)">
+          <div class="sec-icon">
+            <!-- Thumb -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
+              <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+            </svg>
+          </div>
+          <div class="sec-name">Fat</div>
+          <div class="sec-amount" id="fat-amount">0</div>
+          <div class="sec-unit">1 thumb</div>
+          <div class="sec-tap" id="fat-tap">tap to add</div>
+        </div>
+
+      </div>
+
+      <!-- Hydration -->
+      <div class="hydration-section">
+        <div class="hydration-header">
+          <span class="hydration-title">Hydration</span>
+          <span class="hydration-count" id="hydration-count">0 / 8 glasses</span>
+        </div>
+        <div class="hydration-drops" id="hydration-drops"></div>
+        <div class="hydration-goal">Aim for 8 glasses through the day</div>
+      </div>
+
+      <!-- Live summary (shows when protein > 0) -->
+      <div class="summary-card" id="summary-card" style="display:none;">
+        <div class="summary-row">
+          <span class="summary-label">Protein this meal</span>
+          <span class="summary-value" id="sum-meal-protein">+0g</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">New daily total</span>
+          <span class="summary-value" id="sum-new-total">68g / 100g</span>
+        </div>
+        <div class="summary-bar-track">
+          <div class="summary-bar-fill" id="sum-bar" style="width:68%"></div>
+        </div>
+        <div class="summary-met" id="sum-met" style="display:none;">Daily protein floor reached</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="sticky-bottom">
+    <button class="btn-primary" id="log-btn" disabled onclick="logFuel()">Log this fuel</button>
+  </div>
+
+</div>
+<script>
+const GOAL = 100;
+const GRAMS_PER_FIST = 27;
+const STEPS = [0, 0.5, 1, 1.5];
+const STEP_LABELS = ['0', '½', '1', '1½'];
+
+const proteinRaw = localStorage.getItem('carda_protein');
+const baseLogged = proteinRaw ? JSON.parse(proteinRaw).logged : 68;
+
+let proteinPortion = 0;
+const secondary = { veggies: 0, carbs: 0, fat: 0 };
+
+// Init header
+const initPct = Math.min(baseLogged / GOAL * 100, 100);
+document.getElementById('hdr-bar').style.width = initPct + '%';
+document.getElementById('hdr-logged').textContent = baseLogged + 'g';
+const initRemaining = Math.max(GOAL - baseLogged, 0);
+if (initRemaining === 0) {
+  document.getElementById('hdr-label').textContent = 'Protein floor reached';
+  document.getElementById('hdr-logged').classList.add('met');
+  document.getElementById('hdr-label').classList.add('met');
+} else {
+  document.getElementById('hdr-label').textContent = initRemaining + 'g to protein floor';
+}
+
+function setProtein(val) {
+  proteinPortion = val;
+  const btns = document.querySelectorAll('#protein-row .portion-btn');
+  btns.forEach((b, i) => b.classList.toggle('selected', STEPS[i] === val));
+  const grams = Math.round(val * GRAMS_PER_FIST);
+  const badge = document.getElementById('protein-grams');
+  badge.textContent = grams;
+  badge.className = 'protein-gram-badge' + (grams > 0 ? ' active' : '');
+  updateSummary();
+}
+
+function cycle(key, el) {
+  const idx = STEPS.indexOf(secondary[key]);
+  secondary[key] = STEPS[(idx + 1) % STEPS.length];
+  const val = secondary[key];
+  const amtEl = document.getElementById(key + '-amount');
+  const tapEl = document.getElementById(key + '-tap');
+  amtEl.textContent = STEP_LABELS[(idx + 1) % STEPS.length];
+  el.classList.toggle('has-portion', val > 0);
+  tapEl.textContent = val === 0 ? 'tap to add' : 'tap to change';
+
+  // Pulse animation
+  const pulse = document.createElement('div');
+  pulse.className = 'sec-pulse';
+  pulse.style.cssText = 'top:50%;left:50%;transform:translate(-50%,-50%)';
+  el.appendChild(pulse);
+  setTimeout(() => pulse.remove(), 350);
+}
+
+function updateSummary() {
+  const gramsAdded = Math.round(proteinPortion * GRAMS_PER_FIST);
+  const newTotal = baseLogged + gramsAdded;
+  const pct = Math.min(newTotal / GOAL * 100, 100);
+  const goalMet = newTotal >= GOAL;
+  const hydrationChanged = hydrationModified;
+  const hasChanges = proteinPortion > 0 || hydrationChanged;
+
+  const btn = document.getElementById('log-btn');
+  btn.disabled = !hasChanges;
+
+  if (proteinPortion > 0) {
+    document.getElementById('summary-card').style.display = 'flex';
+    document.getElementById('sum-meal-protein').textContent = '+' + gramsAdded + 'g';
+    document.getElementById('sum-new-total').textContent = newTotal + 'g / ' + GOAL + 'g';
+    document.getElementById('sum-bar').style.width = pct + '%';
+    document.getElementById('sum-met').style.display = goalMet ? 'block' : 'none';
+    btn.textContent = goalMet ? 'Log fuel — floor reached!' : `Log fuel (+${gramsAdded}g protein)`;
+  } else {
+    document.getElementById('summary-card').style.display = 'none';
+    btn.textContent = hydrationChanged ? 'Save water log' : 'Log this fuel';
+  }
+}
+
+function logFuel() {
+  const gramsAdded = Math.round(proteinPortion * GRAMS_PER_FIST);
+  localStorage.setItem('carda_protein', JSON.stringify({
+    logged: baseLogged + gramsAdded,
+    goal: GOAL,
+    lastUpdated: new Date().toISOString()
+  }));
+  localStorage.setItem('carda_hydration', JSON.stringify({ glasses: hydrationGlasses, goal: 8 }));
+  window.location.href = 'preview.html';
+}
+
+// ── Hydration ────────────────────────────────────────────────
+const HYDRATION_GOAL = 8;
+const hydrationRaw = localStorage.getItem('carda_hydration');
+let hydrationGlasses = hydrationRaw ? JSON.parse(hydrationRaw).glasses : 0;
+let hydrationModified = false;
+
+function renderDrops() {
+  const container = document.getElementById('hydration-drops');
+  container.innerHTML = '';
+  for (let i = 0; i < HYDRATION_GOAL; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'h-drop' + (i < hydrationGlasses ? ' filled' : '');
+    drop.innerHTML = i < hydrationGlasses
+      ? `<svg viewBox="0 0 24 24" fill="#142E0F"><path d="M12 2C8 8 5 12 5 15.5a7 7 0 0 0 14 0C19 12 16 8 12 2z"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="#97DDF7" stroke-width="1.5"><path d="M12 2C8 8 5 12 5 15.5a7 7 0 0 0 14 0C19 12 16 8 12 2z"/></svg>`;
+    drop.addEventListener('click', () => {
+      hydrationGlasses = i < hydrationGlasses ? i : i + 1;
+      hydrationModified = true;
+      document.getElementById('hydration-count').textContent = hydrationGlasses + ' / 8 glasses';
+      localStorage.setItem('carda_hydration', JSON.stringify({ glasses: hydrationGlasses, goal: 8 }));
+      renderDrops();
+      updateSummary();
+    });
+    container.appendChild(drop);
+  }
+}
+
+document.getElementById('hydration-count').textContent = hydrationGlasses + ' / 8 glasses';
+renderDrops();
+</script>
+</body>
+</html>

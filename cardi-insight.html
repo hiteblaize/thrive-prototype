@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Cardi</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-16:        rgba(20,46,15,0.16);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+.app-header {
+  background: var(--c-dark-green);
+  padding: 14px 20px 16px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.back-btn svg { width: 18px; height: 18px; }
+.header-identity { display: flex; align-items: center; gap: 10px; flex: 1; }
+.cardi-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: rgba(199,185,255,0.18);
+  border: 1.5px solid rgba(199,185,255,0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cardi-avatar svg { width: 20px; height: 20px; }
+.header-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--c-white);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+.header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(199,185,255,0.15);
+  border: 1px solid rgba(199,185,255,0.25);
+  border-radius: 9999px;
+  padding: 2px 8px;
+}
+.header-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c-plum);
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.header-tag-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-plum);
+}
+
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.chat-scroll::-webkit-scrollbar { display: none; }
+
+.chat-date {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--c-dg-30);
+  text-transform: uppercase;
+  margin: 4px 0;
+}
+
+.msg-cardi {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 88%;
+  align-self: flex-start;
+}
+.msg-cardi-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(199,185,255,0.18);
+  border: 1px solid rgba(199,185,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+.msg-cardi-avatar svg { width: 14px; height: 14px; }
+.msg-cardi-bubble {
+  background: var(--c-white);
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+.msg-cardi-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-dark-green);
+}
+.msg-cardi-text strong { font-weight: 700; }
+.msg-time {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--c-dg-30);
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.msg-user {
+  align-self: flex-end;
+  max-width: 80%;
+}
+.msg-user-bubble {
+  background: var(--c-dark-green);
+  border-radius: 18px 18px 4px 18px;
+  padding: 12px 14px;
+}
+.msg-user-text {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--c-white);
+}
+.msg-user .msg-time { text-align: right; }
+
+.suggested-wrap {
+  padding: 10px 16px 8px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex-shrink: 0;
+  padding-bottom: 20px;
+}
+.suggested-wrap::-webkit-scrollbar { display: none; }
+.suggest-chip {
+  display: inline-flex;
+  align-items: center;
+  background: var(--c-white);
+  border: 1.5px solid var(--c-dg-08);
+  border-radius: 9999px;
+  padding: 8px 16px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--c-dark-green);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms, transform 80ms;
+  flex-shrink: 0;
+}
+.suggest-chip:hover { background: var(--c-natural); border-color: var(--c-dg-16); }
+.suggest-chip:active { transform: scale(0.97); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        <path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 0 0 0-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="app-header">
+    <a href="preview.html" class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </a>
+    <div class="header-identity">
+      <div class="cardi-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/>
+          <path d="M9 18v1a3 3 0 0 0 6 0v-1"/>
+        </svg>
+      </div>
+      <div>
+        <div class="header-name">Cardi</div>
+        <div class="header-tag">
+          <div class="header-tag-dot"></div>
+          <span class="header-tag-text">AI Coach</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-scroll" id="chat-scroll">
+    <div class="chat-date">Yesterday · Day 13</div>
+
+    <div class="msg-user">
+      <div class="msg-user-bubble"><div class="msg-user-text">Food noise has been really bad tonight. I'm not even hungry but I can't stop thinking about eating.</div></div>
+      <div class="msg-time" style="text-align:right;">9:14 PM</div>
+    </div>
+
+    <div class="msg-cardi">
+      <div class="msg-cardi-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/>
+          <path d="M9 18v1a3 3 0 0 0 6 0v-1"/>
+        </svg>
+      </div>
+      <div>
+        <div class="msg-cardi-bubble">
+          <div class="msg-cardi-text">That's really common in week two — your brain hasn't fully adjusted to the medication yet. The hunger signal is quieter but the habit of thinking about food is still loud. Try sipping water slowly and giving it 15 minutes. It usually passes.</div>
+        </div>
+        <div class="msg-time">9:16 PM</div>
+      </div>
+    </div>
+
+    <div class="chat-date" style="margin-top:8px;">Today · Day 14</div>
+
+    <div class="msg-cardi">
+      <div class="msg-cardi-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/>
+          <path d="M9 18v1a3 3 0 0 0 6 0v-1"/>
+        </svg>
+      </div>
+      <div>
+        <div class="msg-cardi-bubble">
+          <div class="msg-cardi-text">Morning. How's the food noise today compared to last night?</div>
+        </div>
+        <div class="msg-time">9:41 AM</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="suggested-wrap" id="chip-row">
+    <div class="suggest-chip" data-key="stillBad">Still there honestly</div>
+    <div class="suggest-chip" data-key="better">A bit better</div>
+    <div class="suggest-chip" data-key="whatIsIt">What even is food noise?</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const responses = {
+    stillBad: {
+      user: "Still there honestly",
+      cardi: `That's okay — it doesn't disappear overnight. What you're feeling is your brain's reward circuitry still running its old patterns. The medication quiets physical hunger but it takes longer to rewire the mental habit of reaching for food.\n\nTwo things that help most in the morning: a high-protein breakfast within an hour of waking, and keeping your hands busy early. The noise tends to fade once you're moving.`,
+      next: ['whyProtein', 'willItPass', 'backToDay'],
+    },
+    better: {
+      user: "A bit better actually",
+      cardi: `That's a real sign the medication is starting to settle. Week two is usually when people notice the shift — the noise gets quieter and the cravings feel less urgent.\n\nJust keep logging it in your check-ins. It helps me track the pattern and adjust your plan if it spikes again.`,
+      next: ['whatIsIt', 'willItPass', 'backToDay'],
+    },
+    whatIsIt: {
+      user: "What even is food noise?",
+      cardi: `Food noise is the constant mental chatter about eating — thinking about what you'll eat next, replaying meals, craving specific foods even when you're not hungry.\n\nIt's not a willpower problem. It's driven by dopamine and the brain's reward system. For a lot of people it runs in the background all day, every day.\n\nGLP-1 medications are one of the few things that actually quiets it — not just appetite, but the mental noise too. That's part of why they work so differently to other approaches.`,
+      next: ['stillBad', 'willItPass', 'backToDay'],
+    },
+    whyProtein: {
+      user: "Why does protein help with food noise?",
+      cardi: `Protein is the most satiating macronutrient — it triggers the strongest hormonal response telling your brain you've eaten. When you front-load protein in the morning, you're giving your brain a clear signal early, which dampens the noise for longer.\n\nOn GLP-1s, this compounds. The medication reduces appetite, protein extends satiety — together they can get you through most of the day without the mental pull toward food.`,
+      next: ['willItPass', 'backToDay'],
+    },
+    willItPass: {
+      user: "Will it get better?",
+      cardi: `Yes — for most people, significantly. By weeks four to six the noise is noticeably quieter. Some people describe it as the first time in their adult life they've felt neutral about food.\n\nThe habits you're building now — protein, movement, check-ins — also train your brain to associate satisfaction with different things. That's the long game.`,
+      next: ['backToDay'],
+    },
+    backToDay: {
+      user: "Thanks, back to today",
+      cardi: `Good. Go start your check-in — logging how the food noise feels this morning helps me track whether it's improving week on week.`,
+      next: [],
+      link: 'preview.html',
+    },
+  };
+
+  const scroll  = document.getElementById('chat-scroll');
+  const chipRow = document.getElementById('chip-row');
+  const now     = '9:41 AM';
+
+  function cardiAvatar() {
+    return `<div class="msg-cardi-avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/><path d="M9 18v1a3 3 0 0 0 6 0v-1"/></svg></div>`;
+  }
+
+  function appendUser(text) {
+    const el = document.createElement('div');
+    el.className = 'msg-user';
+    el.innerHTML = `<div class="msg-user-bubble"><div class="msg-user-text">${text}</div></div><div class="msg-time">${now}</div>`;
+    scroll.appendChild(el);
+  }
+
+  function appendCardi(html) {
+    const el = document.createElement('div');
+    el.className = 'msg-cardi';
+    const formatted = html.replace(/\n/g, '<br>');
+    el.innerHTML = `${cardiAvatar()}<div><div class="msg-cardi-bubble"><div class="msg-cardi-text">${formatted}</div></div><div class="msg-time">${now}</div></div>`;
+    scroll.appendChild(el);
+  }
+
+  function setChips(keys) {
+    chipRow.innerHTML = '';
+    if (!keys || keys.length === 0) {
+      chipRow.style.display = 'none';
+      return;
+    }
+    chipRow.style.display = 'flex';
+    keys.forEach(k => {
+      if (!responses[k]) return;
+      const chip = document.createElement('div');
+      chip.className = 'suggest-chip';
+      chip.dataset.key = k;
+      chip.textContent = responses[k].user;
+      chipRow.appendChild(chip);
+    });
+  }
+
+  function scrollBottom() {
+    scroll.scrollTop = scroll.scrollHeight;
+  }
+
+  chipRow.addEventListener('click', (e) => {
+    const chip = e.target.closest('.suggest-chip');
+    if (!chip) return;
+    const key = chip.dataset.key;
+    const r = responses[key];
+    if (!r) return;
+
+    appendUser(r.user);
+    setChips([]);
+    scrollBottom();
+
+    setTimeout(() => {
+      if (r.link) {
+        appendCardi(r.cardi);
+        scrollBottom();
+        setTimeout(() => { window.location.href = r.link; }, 1200);
+      } else {
+        appendCardi(r.cardi);
+        setChips(r.next);
+        scrollBottom();
+      }
+    }, 400);
+  });
+})();
+</script>
+
+</body>
+</html>

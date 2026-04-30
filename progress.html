@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Progress</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-16:        rgba(20,46,15,0.16);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --sh-soft:        0 2px 6px rgba(0,0,0,0.07);
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+.app-header {
+  background: var(--c-dark-green);
+  padding: 18px 24px 22px;
+}
+.header-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.header-title { font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: -0.01em; color: var(--c-white); line-height: 1.1; }
+.header-sub { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.50); margin-top: 3px; }
+
+.period-toggle {
+  display: flex;
+  background: rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 3px;
+  gap: 2px;
+}
+.period-pill {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.50);
+  padding: 6px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background 140ms, color 140ms;
+  flex: 1;
+  text-align: center;
+  user-select: none;
+}
+.period-pill.active { background: var(--c-white); color: var(--c-dark-green); }
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 96px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+.view { display: none; flex-direction: column; gap: 16px; padding: 20px 16px 0; }
+.view.active { display: flex; }
+
+.section-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-dg-60);
+  padding: 0 4px;
+  margin-bottom: -4px;
+}
+
+.card {
+  background: var(--c-white);
+  border-radius: 28px;
+  border: 1px solid var(--c-dg-08);
+  overflow: hidden;
+}
+.card-shadow { box-shadow: var(--sh-card); border: none; }
+
+/* Narrative card */
+.narrative-card { background: var(--c-white); border-radius: 28px; border: 1px solid var(--c-dg-08); overflow: hidden; }
+.narrative-accent { height: 4px; background: var(--c-lime); }
+.narrative-body { padding: 18px 20px 20px; }
+.narrative-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--c-dg-30); margin-bottom: 6px; }
+.narrative-headline { font-family: var(--font-display); font-weight: 600; font-size: 22px; color: var(--c-dark-green); line-height: 1.2; margin-bottom: 8px; }
+.narrative-text { font-family: var(--font-sans); font-weight: 400; font-size: 14px; color: var(--c-dg-60); line-height: 1.55; }
+
+/* Behavior list */
+.behavior-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--c-dg-08);
+}
+.behavior-row:last-child { border-bottom: none; }
+.behavior-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.behavior-name { font-family: var(--font-sans); font-weight: 500; font-size: 14px; color: var(--c-dark-green); flex: 1; }
+.behavior-badge {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  border-radius: 9999px;
+  padding: 4px 11px;
+  flex-shrink: 0;
+}
+
+/* Cause-effect divider */
+.cause-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px;
+  margin-top: -2px;
+}
+.cause-divider-line { height: 1px; flex: 1; background: var(--c-dg-16); }
+.cause-divider-label {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-dg-30);
+}
+
+/* Two-col stat tiles */
+.two-col { display: flex; gap: 10px; }
+.two-col .stat-tile { flex: 1; }
+.stat-tile { background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); padding: 18px 16px 16px; }
+.stat-tile-value { font-family: var(--font-sans); font-weight: 900; font-size: 36px; letter-spacing: -0.03em; color: var(--c-dark-green); line-height: 1; margin-bottom: 6px; }
+.stat-tile-label { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: var(--c-dg-60); line-height: 1.4; }
+.stat-tile-sub { font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: var(--c-dg-30); margin-top: 2px; }
+
+/* Insight card */
+.insight-card { background: var(--c-white); border-radius: 20px; border: 1px solid var(--c-dg-08); padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
+.insight-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.insight-title { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-dark-green); margin-bottom: 2px; }
+.insight-sub { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: var(--c-dg-60); line-height: 1.4; }
+
+/* Journey card */
+.journey-card { background: var(--c-dark-green); border-radius: 28px; overflow: hidden; box-shadow: var(--sh-card); }
+.journey-header { padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.journey-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-lime); margin-bottom: 3px; }
+.journey-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--c-white); line-height: 1.2; }
+.journey-body { padding: 20px 20px 22px; }
+.waypoint-track { position: relative; padding-left: 20px; display: flex; flex-direction: column; gap: 0; }
+.waypoint-line { position: absolute; left: 7px; top: 10px; bottom: 10px; width: 2px; background: rgba(255,255,255,0.12); }
+.waypoint-line-fill { position: absolute; left: 7px; top: 10px; width: 2px; background: var(--c-lime); }
+.waypoint { position: relative; display: flex; align-items: flex-start; gap: 14px; padding-bottom: 22px; }
+.waypoint:last-child { padding-bottom: 0; }
+.waypoint-node { position: absolute; left: -20px; top: 3px; width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.waypoint-node.done { background: var(--c-lime); }
+.waypoint-node.current { background: var(--c-white); box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
+.waypoint-node.upcoming { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.20); }
+.waypoint-node svg { width: 8px; height: 8px; }
+.waypoint-name { font-family: var(--font-sans); font-weight: 700; font-size: 14px; color: var(--c-white); margin-bottom: 2px; }
+.waypoint.upcoming .waypoint-name { color: rgba(255,255,255,0.45); }
+.waypoint-detail { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: rgba(255,255,255,0.50); line-height: 1.4; }
+.waypoint-tag { display: inline-flex; align-items: center; background: rgba(216,231,60,0.15); border: 1px solid rgba(216,231,60,0.30); border-radius: 9999px; padding: 3px 9px; font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.03em; color: var(--c-lime); margin-top: 5px; }
+
+/* Roadmap */
+.roadmap-card { background: var(--c-dark-green); border-radius: 28px; overflow: hidden; box-shadow: var(--sh-card); }
+.roadmap-header { padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.roadmap-eyebrow { font-family: var(--font-sans); font-weight: 700; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-lime); margin-bottom: 3px; }
+.roadmap-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--c-white); line-height: 1.2; }
+.roadmap-body { padding: 20px 20px 22px; }
+.phase-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.phase-row:last-child { margin-bottom: 0; }
+.phase-row-bar-wrap { flex: 1; height: 8px; background: rgba(255,255,255,0.10); border-radius: 9999px; overflow: hidden; }
+.phase-row-bar-fill { height: 100%; border-radius: 9999px; }
+.phase-row-pct { font-family: var(--font-sans); font-weight: 700; font-size: 12px; flex-shrink: 0; min-width: 36px; text-align: right; }
+
+/* Aggregate stats */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: var(--c-dark-green);
+  display: flex; align-items: center; justify-content: space-around;
+  padding: 0 8px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; padding-top: 8px; cursor: pointer; opacity: 0.45; transition: opacity 140ms; text-decoration: none; }
+.nav-item.active { opacity: 1; }
+.nav-item:hover { opacity: 0.75; }
+.nav-item.active:hover { opacity: 1; }
+.nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+.nav-dot { position: absolute; bottom: -3px; width: 5px; height: 5px; border-radius: 50%; background: var(--c-lime); }
+.nav-label { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.02em; color: var(--c-white); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        <path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 0 0 0-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-row">
+      <div>
+        <div class="header-title">Your Progress</div>
+        <div class="header-sub" id="header-sub">Day 14 · Week 2</div>
+      </div>
+    </div>
+    <div class="period-toggle">
+      <div class="period-pill" data-view="week">Week</div>
+      <div class="period-pill active" data-view="phase">Phase</div>
+      <div class="period-pill" data-view="alltime">All time</div>
+    </div>
+  </div>
+
+  <!-- Scroll area -->
+  <div class="scroll-area" id="scroll-area">
+
+    <!-- ═══════════════════ WEEK VIEW ═══════════════════ -->
+    <div class="view" id="view-week">
+
+      <!-- Narrative -->
+      <div class="narrative-card">
+        <div class="narrative-accent"></div>
+        <div class="narrative-body">
+          <div class="narrative-eyebrow">This week</div>
+          <div class="narrative-headline" id="week-headline">Strong week.</div>
+          <div class="narrative-text" id="week-narrative">You've checked in every day and hit your protein target 5 of 7 days. That consistency is what's moving the scale.</div>
+        </div>
+      </div>
+
+      <!-- What you did -->
+      <div class="section-label">What you did</div>
+      <div class="card" style="margin-top:10px;">
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Daily check-ins</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">7 of 7</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Protein goal</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">5 of 7 days</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Training sessions</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">2 done</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" id="today-dot" style="background:var(--c-sky);"></div>
+          <div class="behavior-name">Today</div>
+          <div class="behavior-badge" id="today-badge" style="background:rgba(151,221,247,0.20); color:var(--c-dark-green);">In progress</div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="cause-divider">
+        <div class="cause-divider-line"></div>
+        <div class="cause-divider-label">What changed</div>
+        <div class="cause-divider-line"></div>
+      </div>
+
+      <!-- Results -->
+      <div class="two-col">
+        <div class="stat-tile">
+          <div class="stat-tile-value" style="color:var(--c-citrus);">−1.8</div>
+          <div class="stat-tile-label">lbs this week</div>
+          <div class="stat-tile-sub">186.0 today</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="week-score-delta" style="color:var(--c-dark-green);">+7</div>
+          <div class="stat-tile-label">vs last week</div>
+          <div class="stat-tile-sub" id="week-score-sub">65 avg last week</div>
+        </div>
+      </div>
+
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ═══════════════════ PHASE VIEW ═══════════════════ -->
+    <div class="view active" id="view-phase">
+
+      <!-- Narrative -->
+      <div class="narrative-card">
+        <div class="narrative-accent"></div>
+        <div class="narrative-body">
+          <div class="narrative-eyebrow">Phase 1 · Day 14</div>
+          <div class="narrative-headline">You've built real habits.</div>
+          <div class="narrative-text">14 check-ins, 5 resistance sessions, and consistent protein. Your Thrive Score has climbed 17 points since Day 1 — and your body is responding.</div>
+        </div>
+      </div>
+
+      <!-- What you did -->
+      <div class="section-label">What you did</div>
+      <div class="card" style="margin-top:10px;">
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Daily check-ins</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">14 of 14</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Protein goal</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">11 of 14 days</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Resistance sessions</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">5 completed</div>
+        </div>
+        <div class="behavior-row">
+          <div class="behavior-dot" style="background:var(--c-lime);"></div>
+          <div class="behavior-name">Lifestyle sessions</div>
+          <div class="behavior-badge" style="background:rgba(216,231,60,0.15); color:var(--c-dark-green);">3 completed</div>
+        </div>
+      </div>
+
+      <!-- Connector -->
+      <div class="cause-divider">
+        <div class="cause-divider-line"></div>
+        <div class="cause-divider-label">What changed</div>
+        <div class="cause-divider-line"></div>
+      </div>
+
+      <!-- Results -->
+      <div class="two-col">
+        <div class="stat-tile">
+          <div class="stat-tile-value" style="color:var(--c-citrus);">−6.2</div>
+          <div class="stat-tile-label">lbs since Day 1</div>
+          <div class="stat-tile-sub">lean mass intact</div>
+        </div>
+        <div class="stat-tile">
+          <div class="stat-tile-value" id="phase-score-avg" style="color:var(--c-dark-green);">68</div>
+          <div class="stat-tile-label">Phase avg score</div>
+          <div class="stat-tile-sub">across 14 days</div>
+        </div>
+      </div>
+
+      <!-- Phase journey -->
+      <div>
+        <div class="section-label">Your journey</div>
+        <div class="journey-card" style="margin-top:10px;">
+          <div class="journey-header">
+            <div class="journey-eyebrow">Active Loss · 56 days</div>
+            <div class="journey-title">Finding your rhythm</div>
+          </div>
+          <div class="journey-body">
+            <div class="waypoint-track">
+              <div class="waypoint-line"></div>
+              <div class="waypoint-line-fill" style="height:42%;"></div>
+              <div class="waypoint">
+                <div class="waypoint-node done">
+                  <svg viewBox="0 0 8 8" fill="none"><path d="M1 4.5l2 2 4-4" stroke="#142E0F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="waypoint-content">
+                  <div class="waypoint-name">Week 1 — Orientation</div>
+                  <div class="waypoint-detail">Baselines set. Side effect protocol learned. First session with Coach Haley complete.</div>
+                </div>
+              </div>
+              <div class="waypoint">
+                <div class="waypoint-node current"></div>
+                <div class="waypoint-content">
+                  <div class="waypoint-name">Weeks 2–3 — Building habits</div>
+                  <div class="waypoint-detail">Daily check-ins, protein floors, and 3x/week resistance training becoming automatic.</div>
+                  <div class="waypoint-tag">You are here · Day 14</div>
+                </div>
+              </div>
+              <div class="waypoint">
+                <div class="waypoint-node upcoming"></div>
+                <div class="waypoint-content">
+                  <div class="waypoint-name">Weeks 4–8 — Momentum</div>
+                  <div class="waypoint-detail">Score targets rise. Taper planning begins. Prep for Phase 2 transition.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:8px;"></div>
+    </div>
+
+    <!-- ═══════════════════ ALL TIME VIEW ═══════════════════ -->
+    <div class="view" id="view-alltime">
+
+      <!-- Roadmap -->
+      <div>
+        <div class="section-label">Your program</div>
+        <div class="roadmap-card" style="margin-top:10px;">
+          <div class="roadmap-header">
+            <div class="roadmap-eyebrow">3-phase program · ~18 months</div>
+            <div class="roadmap-title">You're 6% of the way there</div>
+          </div>
+          <div class="roadmap-body">
+            <div style="margin-bottom:20px;">
+              <div class="phase-row">
+                <div style="min-width:80px;">
+                  <div style="font-family:var(--font-sans); font-weight:700; font-size:13px; color:var(--c-white); margin-bottom:2px;">Phase 1</div>
+                  <div style="font-family:var(--font-sans); font-weight:400; font-size:11px; color:rgba(255,255,255,0.40);">Active Loss</div>
+                </div>
+                <div class="phase-row-bar-wrap">
+                  <div class="phase-row-bar-fill" style="width:25%; background:var(--c-lime);"></div>
+                </div>
+                <div class="phase-row-pct" style="color:var(--c-lime);">14/56</div>
+              </div>
+              <div class="phase-row">
+                <div style="min-width:80px;">
+                  <div style="font-family:var(--font-sans); font-weight:700; font-size:13px; color:rgba(255,255,255,0.35); margin-bottom:2px;">Phase 2</div>
+                  <div style="font-family:var(--font-sans); font-weight:400; font-size:11px; color:rgba(255,255,255,0.25);">GLP-1 Taper</div>
+                </div>
+                <div class="phase-row-bar-wrap">
+                  <div class="phase-row-bar-fill" style="width:0%; background:var(--c-plum);"></div>
+                </div>
+                <div class="phase-row-pct" style="color:rgba(255,255,255,0.25);">63 days</div>
+              </div>
+              <div class="phase-row">
+                <div style="min-width:80px;">
+                  <div style="font-family:var(--font-sans); font-weight:700; font-size:13px; color:rgba(255,255,255,0.35); margin-bottom:2px;">Phase 3</div>
+                  <div style="font-family:var(--font-sans); font-weight:400; font-size:11px; color:rgba(255,255,255,0.25);">Maintenance</div>
+                </div>
+                <div class="phase-row-bar-wrap">
+                  <div class="phase-row-bar-fill" style="width:0%; background:var(--c-sky);"></div>
+                </div>
+                <div class="phase-row-pct" style="color:rgba(255,255,255,0.25);">12 months</div>
+              </div>
+            </div>
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.10); border-radius:16px; padding:12px 14px;">
+              <div style="font-family:var(--font-sans); font-weight:700; font-size:13px; color:var(--c-white); margin-bottom:3px;">Phase 2 unlocks in 42 days</div>
+              <div style="font-family:var(--font-sans); font-weight:400; font-size:13px; color:rgba(255,255,255,0.50); line-height:1.4;">Your 9-week medication taper begins once Phase 1 targets are met. Coach Haley will prepare you in weeks 6–8.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Since you started -->
+      <div>
+        <div class="section-label">Since you started</div>
+        <div class="stat-grid" style="margin-top:10px;">
+          <div class="stat-tile">
+            <div class="stat-tile-value" style="color:var(--c-citrus); font-size:28px;">−6.2</div>
+            <div class="stat-tile-label">lbs lost,<br>lean mass preserved</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-value" style="font-size:28px;">5</div>
+            <div class="stat-tile-label">resistance<br>sessions done</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-value" style="font-size:28px;">14</div>
+            <div class="stat-tile-label">consecutive<br>check-ins</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-tile-value" style="font-size:28px;">11</div>
+            <div class="stat-tile-label">protein days<br>hit this phase</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:8px;"></div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a href="preview.html" class="nav-item">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9,22 9,12 15,12 15,22" fill="#142E0F" stroke="none"/>
+        </svg>
+      </div>
+      <span class="nav-label">Home</span>
+    </a>
+    <a href="chat.html" class="nav-item" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <div style="position:absolute; top:-2px; right:-2px; width:8px; height:8px; border-radius:50%; background:var(--c-citrus); border:1.5px solid var(--c-dark-green);"></div>
+      </div>
+      <span class="nav-label">Chat</span>
+    </a>
+    <div class="nav-item active" aria-current="page">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        <div class="nav-dot"></div>
+      </div>
+      <span class="nav-label">Progress</span>
+    </div>
+  </nav>
+
+</div>
+
+<script>
+// Read localStorage
+const checkin  = JSON.parse(localStorage.getItem('carda_checkin')  || 'null');
+const protein  = JSON.parse(localStorage.getItem('carda_protein')  || 'null');
+const article  = JSON.parse(localStorage.getItem('carda_article')  || 'null');
+const exercise = JSON.parse(localStorage.getItem('carda_exercise') || 'null');
+const lifestyle= JSON.parse(localStorage.getItem('carda_lifestyle')|| 'null');
+
+let raw = 0;
+if (checkin) raw += 20;
+if (protein) {
+  if (protein.logged >= protein.goal) raw += 35;
+  else if (protein.logged > 0) raw += 15;
+}
+if (article   && article.read)        raw += 10;
+if (exercise  && exercise.completed)  raw += 40;
+if (lifestyle && lifestyle.completed) raw += 25;
+const scaled = raw === 0 ? 0 : Math.round((raw / 130) * 100);
+
+// Week: delta vs last week average
+const lastWeekAvg = 65;
+const weekDelta = scaled - lastWeekAvg;
+const weekDeltaEl = document.getElementById('week-score-delta');
+if (weekDeltaEl) {
+  weekDeltaEl.textContent = (weekDelta >= 0 ? '+' : '') + weekDelta;
+  weekDeltaEl.style.color = weekDelta >= 0 ? 'var(--c-dark-green)' : 'var(--c-citrus)';
+}
+
+// Phase: average across all 14 days (days 1–13 hardcoded, day 14 = today's live score)
+const historicalScores = [55, 58, 62, 60, 65, 68, 72, 66, 74, 78, 73, 80, 76];
+const phaseAvg = Math.round([...historicalScores, scaled].reduce((a, b) => a + b, 0) / 14);
+const phaseAvgEl = document.getElementById('phase-score-avg');
+if (phaseAvgEl) phaseAvgEl.textContent = phaseAvg;
+
+// Update today row in week view behavior list
+(function() {
+  const dot   = document.getElementById('today-dot');
+  const badge = document.getElementById('today-badge');
+  if (!dot || !badge) return;
+
+  const tasksDone = [checkin, protein?.logged > 0 ? protein : null, exercise?.completed ? exercise : null, lifestyle?.completed ? lifestyle : null, article?.read ? article : null].filter(Boolean).length;
+
+  if (scaled >= 100) {
+    dot.style.background   = 'var(--c-lime)';
+    badge.style.background = 'rgba(216,231,60,0.15)';
+    badge.style.color      = 'var(--c-dark-green)';
+    badge.textContent      = 'All done';
+  } else if (scaled >= 60) {
+    dot.style.background   = 'var(--c-lime)';
+    badge.style.background = 'rgba(216,231,60,0.15)';
+    badge.style.color      = 'var(--c-dark-green)';
+    badge.textContent      = scaled + ' pts · still going';
+  } else if (scaled > 0) {
+    dot.style.background   = 'var(--c-sky)';
+    badge.style.background = 'rgba(151,221,247,0.20)';
+    badge.style.color      = 'var(--c-dark-green)';
+    badge.textContent      = scaled + ' pts so far';
+  } else {
+    dot.style.background   = 'rgba(20,46,15,0.15)';
+    badge.style.background = 'var(--c-dg-08)';
+    badge.style.color      = 'var(--c-dg-30)';
+    badge.textContent      = 'Not started';
+  }
+})();
+
+// Update week narrative card based on score
+(function() {
+  const headline  = document.getElementById('week-headline');
+  const narrative = document.getElementById('week-narrative');
+  if (!headline || !narrative) return;
+
+  if (scaled >= 90) {
+    headline.textContent  = 'Exceptional day.';
+    narrative.textContent = 'Every habit hit. Check-in, protein, session — that\'s the trifecta that protects muscle during weight loss. This is exactly what Phase 1 is supposed to look like.';
+  } else if (scaled >= 70) {
+    headline.textContent  = 'Strong week.';
+    narrative.textContent = 'Check-ins every day, protein target hit most days. That consistency is what keeps muscle on while the medication works.';
+  } else if (scaled >= 45) {
+    headline.textContent  = 'Building momentum.';
+    narrative.textContent = 'Check-in done, protein logged. Add your session and your body has everything it needs to lose fat without losing muscle today.';
+  } else if (scaled > 0) {
+    headline.textContent  = 'Day in progress.';
+    narrative.textContent = 'You\'ve started. Protein and your session are the two habits that protect your muscle while the medication works.';
+  } else {
+    headline.textContent  = 'Ready to go.';
+    narrative.textContent = 'Start your check-in. Every habit today sends your body a signal: lose fat, keep muscle.';
+  }
+})();
+
+// Period toggle
+const pills     = document.querySelectorAll('.period-pill');
+const views     = { week: document.getElementById('view-week'), phase: document.getElementById('view-phase'), alltime: document.getElementById('view-alltime') };
+const subLabels = { week: 'Day 14 · Week 2', phase: 'Day 14 · Active Loss phase', alltime: 'Day 14 · All phases' };
+const headerSub = document.getElementById('header-sub');
+const scrollArea = document.getElementById('scroll-area');
+
+pills.forEach(pill => {
+  pill.addEventListener('click', () => {
+    const target = pill.dataset.view;
+    pills.forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    Object.values(views).forEach(v => v.classList.remove('active'));
+    views[target].classList.add('active');
+    headerSub.textContent = subLabels[target];
+    scrollArea.scrollTop = 0;
+  });
+});
+</script>
+
+</body>
+</html>

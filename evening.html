@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Evening Wrap-Up</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #1a1a2e;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: #0f1a0c;
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Status bar */
+.status-bar {
+  background: transparent;
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.status-time { font-family:var(--font-sans); font-weight:700; font-size:15px; color:rgba(255,255,255,0.85); letter-spacing:-0.01em; }
+.status-icons { display:flex; align-items:center; gap:6px; opacity:0.75; }
+
+/* Header */
+.app-header {
+  background: linear-gradient(180deg, #0f1a0c 0%, #162412 100%);
+  padding: 4px 24px 20px;
+}
+.header-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; margin-bottom: 14px; opacity: 0.6;
+}
+.header-back svg { flex-shrink: 0; }
+.header-back span { font-family:var(--font-sans); font-size:13px; font-weight:500; color:white; }
+.header-eyebrow {
+  font-family:var(--font-sans); font-weight:700; font-size:11px;
+  letter-spacing:0.08em; text-transform:uppercase; color:var(--c-plum);
+  margin-bottom:8px; display:flex; align-items:center; gap:6px;
+}
+.header-eyebrow-dot { width:5px; height:5px; border-radius:50%; background:var(--c-plum); }
+.header-title {
+  font-family:var(--font-display); font-weight:600; font-size:28px;
+  line-height:1.1; letter-spacing:-0.01em; color:#fff; margin-bottom:6px;
+}
+.header-sub { font-family:var(--font-sans); font-size:14px; color:rgba(255,255,255,0.50); line-height:20px; }
+
+/* Progress bar */
+.progress-bar-wrap { margin-top:18px; }
+.progress-track { height:3px; background:rgba(255,255,255,0.12); border-radius:9999px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--c-plum); border-radius:9999px; transition:width 400ms var(--ease-out); }
+.progress-label { display:flex; justify-content:space-between; margin-top:6px; }
+.progress-step-text { font-size:11px; font-weight:500; color:rgba(255,255,255,0.35); }
+.progress-step-text.active { color:var(--c-plum); }
+
+/* Wave */
+.wave { display:block; width:100%; background:#162412; line-height:0; }
+.wave svg { display:block; width:100%; }
+
+/* Scroll */
+.scroll-area {
+  flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch;
+  background:var(--c-natural); padding-bottom:120px;
+}
+.scroll-area::-webkit-scrollbar { display:none; }
+
+/* Steps */
+.step { display:none; padding:24px 16px 0; animation:fadeUp 240ms var(--ease-out); }
+.step.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.step-title {
+  font-family:var(--font-display); font-weight:600; font-size:22px;
+  line-height:1.2; letter-spacing:-0.01em; color:var(--c-dark-green); margin-bottom:8px;
+}
+.step-sub { font-size:14px; color:var(--c-dg-60); line-height:21px; margin-bottom:20px; }
+
+/* Gratitude textarea */
+.gratitude-input {
+  width:100%; background:var(--c-white); border:1.5px solid var(--c-dg-08);
+  border-radius:16px; padding:14px 16px;
+  font-family:var(--font-sans); font-weight:400; font-size:15px;
+  line-height:23px; color:var(--c-dark-green); min-height:100px; resize:none; outline:none;
+  transition:border-color 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+}
+.gratitude-input::placeholder { color:var(--c-dg-30); }
+.gratitude-input:focus { border-color:var(--c-dark-green); box-shadow:0 2px 6px rgba(0,0,0,0.07); }
+.char-count { text-align:right; font-size:12px; color:var(--c-dg-30); margin-top:6px; }
+
+/* Hunger scale */
+.hunger-scale { display:flex; gap:5px; justify-content:space-between; margin:4px 0 10px; }
+.hunger-pip {
+  flex:1; height:40px; border-radius:10px; background:var(--c-dg-08);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-sans); font-weight:700; font-size:13px; color:var(--c-dg-30);
+  cursor:pointer; transition:background 120ms, color 120ms;
+}
+.hunger-pip.selected { background:var(--c-plum); color:var(--c-dark-green); }
+.hunger-scale-labels { display:flex; justify-content:space-between; margin-top:4px; }
+.hunger-scale-label { font-size:11px; color:var(--c-dg-30); }
+
+/* Food noise chips */
+.chip-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; }
+.chip {
+  display:inline-flex; align-items:center; gap:5px; padding:8px 14px;
+  border-radius:9999px; background:var(--c-white); border:1.5px solid var(--c-dg-08);
+  font-family:var(--font-sans); font-weight:500; font-size:13px; color:var(--c-dg-60);
+  cursor:pointer; transition:background 120ms, border-color 120ms, color 120ms;
+}
+.chip.selected { background:rgba(199,185,255,0.20); border-color:var(--c-plum); color:var(--c-dark-green); }
+
+/* Sleep checklist */
+.sleep-item {
+  display:flex; align-items:center; gap:12px; padding:13px 0;
+  border-bottom:1px solid var(--c-dg-08); cursor:pointer;
+}
+.sleep-item:last-child { border-bottom:none; }
+.sleep-check {
+  width:24px; height:24px; border-radius:7px; border:1.5px solid var(--c-dg-08);
+  background:var(--c-white); display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; transition:background 120ms, border-color 120ms;
+}
+.sleep-check.done { background:var(--c-lime); border-color:var(--c-lime); }
+.sleep-check svg { width:12px; height:12px; opacity:0; }
+.sleep-check.done svg { opacity:1; }
+.sleep-text { font-family:var(--font-sans); font-weight:400; font-size:14px; line-height:20px; color:var(--c-dark-green); }
+.sleep-text.done { text-decoration:line-through; color:var(--c-dg-30); }
+
+/* Divider label */
+.divider-label {
+  font-size:11px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--c-dg-30); margin:20px 0 10px;
+}
+
+/* Completion card */
+.completion-card {
+  background:var(--c-white); border-radius:24px; border:1px solid var(--c-dg-08);
+  padding:24px; margin-bottom:16px; text-align:center;
+}
+.completion-icon {
+  width:56px; height:56px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; margin:0 auto 16px;
+}
+.completion-headline {
+  font-family:var(--font-display); font-weight:600; font-size:22px;
+  letter-spacing:-0.01em; color:var(--c-dark-green); margin-bottom:8px; line-height:1.25;
+}
+.completion-body { font-size:14px; color:var(--c-dg-60); line-height:22px; }
+
+/* Day summary pills */
+.day-pill {
+  display:flex; align-items:center; gap:5px; background:var(--c-natural);
+  border:1px solid var(--c-dg-08); border-radius:9999px; padding:5px 12px;
+}
+.day-pill-dot { width:6px; height:6px; border-radius:50%; }
+.day-pill-text { font-family:var(--font-sans); font-weight:500; font-size:12px; color:var(--c-dg-60); }
+
+/* Sticky bottom */
+.sticky-bottom {
+  position:absolute; bottom:0; left:0; right:0;
+  background:linear-gradient(to bottom, transparent, var(--c-natural) 28%);
+  padding:20px 16px 28px;
+}
+.btn-primary {
+  display:flex; align-items:center; justify-content:center; width:100%;
+  background:var(--c-lime); color:var(--c-dark-green); font-family:var(--font-sans);
+  font-weight:700; font-size:16px; letter-spacing:0.01em; border:none;
+  border-radius:9999px; padding:18px 24px; cursor:pointer;
+  transition:transform 100ms, box-shadow 140ms var(--ease-out);
+}
+.btn-primary:disabled { opacity:0.4; cursor:default; }
+.btn-primary:not(:disabled):hover { box-shadow:var(--sh-card); }
+.btn-primary:not(:disabled):active { transform:scale(0.97); box-shadow:none; }
+
+/* Section card wrapper */
+.section-card {
+  background:var(--c-white); border-radius:20px; border:1px solid var(--c-dg-08);
+  padding:18px 18px 20px;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- Header -->
+  <div style="background:linear-gradient(180deg,#0f1a0c 0%,#162412 100%);">
+    <div class="status-bar">
+      <span class="status-time">9:02 PM</span>
+      <div class="status-icons">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="rgba(255,255,255,0.8)"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="rgba(255,255,255,0.8)"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="rgba(255,255,255,0.8)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="rgba(255,255,255,0.8)"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="rgba(255,255,255,0.3)" fill="none"/><rect x="2" y="2" width="12" height="8" rx="2" fill="rgba(255,255,255,0.8)"/><path d="M23 4v4a2 2 0 0 0 0-4z" fill="rgba(255,255,255,0.5)"/></svg>
+      </div>
+    </div>
+
+    <div class="app-header">
+      <a href="preview.html" class="header-back">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        <span>Home</span>
+      </a>
+      <div class="header-eyebrow"><div class="header-eyebrow-dot"></div>Evening Wrap-Up · Day 14</div>
+      <div class="header-title" id="header-title">Wind down, Bexli.</div>
+      <div class="header-sub" id="header-sub">Let's close out the day.</div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:33%"></div></div>
+        <div class="progress-label">
+          <span class="progress-step-text active" id="prog-1">Gratitude</span>
+          <span class="progress-step-text" id="prog-2">Hunger</span>
+          <span class="progress-step-text" id="prog-3">Sleep</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wave">
+      <svg viewBox="0 0 390 28" preserveAspectRatio="none" height="28">
+        <path d="M0 0 C97 28 293 28 390 0 L390 28 L0 28 Z" fill="#F4F0EB"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="scroll-area">
+
+    <!-- Step 1: Gratitude -->
+    <div class="step active" id="step-1">
+      <div class="step-title">One good thing today</div>
+      <div class="step-sub">What's something — however small — that went well? Even on a hard day there's something.</div>
+      <textarea class="gratitude-input" id="gratitude-text" placeholder="I managed to drink my ginger tea before training and it actually helped..." oninput="onGratitudeInput()"></textarea>
+      <div class="char-count"><span id="char-count">0</span> / 280</div>
+    </div>
+
+    <!-- Step 2: Hunger + Food Noise -->
+    <div class="step" id="step-2">
+      <div class="step-title">How hungry are you right now?</div>
+      <div class="step-sub">1 = not hungry at all &nbsp;·&nbsp; 10 = very hungry</div>
+      <div class="hunger-scale" id="hunger-scale">
+        <div class="hunger-pip" onclick="selectHunger(1)">1</div>
+        <div class="hunger-pip" onclick="selectHunger(2)">2</div>
+        <div class="hunger-pip" onclick="selectHunger(3)">3</div>
+        <div class="hunger-pip" onclick="selectHunger(4)">4</div>
+        <div class="hunger-pip" onclick="selectHunger(5)">5</div>
+        <div class="hunger-pip" onclick="selectHunger(6)">6</div>
+        <div class="hunger-pip" onclick="selectHunger(7)">7</div>
+        <div class="hunger-pip" onclick="selectHunger(8)">8</div>
+        <div class="hunger-pip" onclick="selectHunger(9)">9</div>
+        <div class="hunger-pip" onclick="selectHunger(10)">10</div>
+      </div>
+      <div class="hunger-scale-labels">
+        <span class="hunger-scale-label">Not hungry</span>
+        <span class="hunger-scale-label">Very hungry</span>
+      </div>
+
+      <div class="divider-label">Any food noise today?</div>
+      <div class="step-sub" style="margin-bottom:12px; margin-top:-6px;">Tap all that apply.</div>
+      <div class="chip-row" id="food-noise-chips">
+        <div class="chip" onclick="toggleChip(this)">Stress craving</div>
+        <div class="chip" onclick="toggleChip(this)">Boredom eating</div>
+        <div class="chip" onclick="toggleChip(this)">Social pressure</div>
+        <div class="chip" onclick="toggleChip(this)">Late-night urge</div>
+        <div class="chip" onclick="toggleChip(this)">None today</div>
+      </div>
+    </div>
+
+    <!-- Step 3: Sleep -->
+    <div class="step" id="step-3">
+      <div class="step-title">Wind-down checklist</div>
+      <div class="step-sub">Tap off what you've done. These protect your sleep quality and recovery.</div>
+      <div class="section-card">
+        <div class="sleep-item" onclick="toggleSleep(this)">
+          <div class="sleep-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5 5.5-5.5" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="sleep-text">No screens after 9:30 PM</span>
+        </div>
+        <div class="sleep-item" onclick="toggleSleep(this)">
+          <div class="sleep-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5 5.5-5.5" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="sleep-text">Room temperature below 68°F</span>
+        </div>
+        <div class="sleep-item" onclick="toggleSleep(this)">
+          <div class="sleep-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5 5.5-5.5" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="sleep-text">Took magnesium glycinate</span>
+        </div>
+        <div class="sleep-item" onclick="toggleSleep(this)">
+          <div class="sleep-check"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5 5.5-5.5" stroke="#142E0F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <span class="sleep-text">Set a consistent wake-up alarm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Completion -->
+    <div class="step" id="step-4">
+      <div class="completion-card">
+        <div class="completion-icon" id="completion-icon"></div>
+        <div class="completion-headline" id="completion-headline">Day 14 done.</div>
+        <div class="completion-body" id="completion-body">You showed up today. That's what matters.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sticky-bottom">
+    <button class="btn-primary" id="next-btn" onclick="handleNext()">Next</button>
+  </div>
+
+</div>
+<script>
+let currentStep = 1;
+let gratitudeText = '';
+let hungerScore = 0;
+let foodNoise = [];
+let sleepChecks = [];
+
+// Step 1
+function onGratitudeInput() {
+  const ta = document.getElementById('gratitude-text');
+  gratitudeText = ta.value;
+  document.getElementById('char-count').textContent = gratitudeText.length;
+  document.getElementById('next-btn').disabled = gratitudeText.trim().length === 0;
+}
+
+// Step 2
+function selectHunger(n) {
+  hungerScore = n;
+  document.querySelectorAll('.hunger-pip').forEach((pip, i) => {
+    pip.classList.toggle('selected', i + 1 === n);
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+// Step 3
+function toggleSleep(item) {
+  const check = item.querySelector('.sleep-check');
+  const text  = item.querySelector('.sleep-text');
+  const isDone = check.classList.toggle('done');
+  text.classList.toggle('done', isDone);
+}
+
+function handleNext() {
+  if (currentStep < 4) {
+    goToStep(currentStep + 1);
+  } else {
+    saveThenDone();
+  }
+}
+
+function goToStep(n) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  updateHeader();
+  updateProgress();
+  updateBtn();
+  document.querySelector('.scroll-area').scrollTop = 0;
+}
+
+function updateProgress() {
+  const pcts = { 1: 33, 2: 66, 3: 100, 4: 100 };
+  document.getElementById('progress-fill').style.width = pcts[currentStep] + '%';
+  ['prog-1','prog-2','prog-3'].forEach((id, i) => {
+    document.getElementById(id).classList.toggle('active', i + 1 === currentStep);
+  });
+}
+
+function updateHeader() {
+  const titles = {
+    1: 'Wind down, Bexli.',
+    2: 'Wind down, Bexli.',
+    3: 'Wind down, Bexli.',
+    4: 'Day 14 wrapped.',
+  };
+  const subs = {
+    1: 'Let\'s close out the day.',
+    2: 'How did your body feel tonight?',
+    3: 'A few small habits protect tomorrow.',
+    4: 'Cardi has a message for you.',
+  };
+  document.getElementById('header-title').textContent = titles[currentStep];
+  document.getElementById('header-sub').textContent   = subs[currentStep];
+}
+
+function updateBtn() {
+  const btn = document.getElementById('next-btn');
+  if (currentStep === 1) {
+    btn.disabled = gratitudeText.trim().length === 0;
+    btn.textContent = 'Next';
+  } else if (currentStep === 2) {
+    btn.disabled = hungerScore === 0;
+    btn.textContent = 'Next';
+  } else if (currentStep === 3) {
+    btn.disabled = false;
+    btn.textContent = 'Next';
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Talk to Cardi';
+  }
+}
+
+function renderCompletion() {
+  // Collect food noise
+  foodNoise = [...document.querySelectorAll('#food-noise-chips .chip.selected')]
+    .map(c => c.textContent.trim());
+
+  // Collect sleep checks
+  sleepChecks = [...document.querySelectorAll('.sleep-item')]
+    .filter(item => item.querySelector('.sleep-check.done'))
+    .map(item => item.querySelector('.sleep-text').textContent.trim());
+
+  // Read today's data
+  const protein = JSON.parse(localStorage.getItem('carda_protein') || 'null');
+  const hydration = JSON.parse(localStorage.getItem('carda_hydration') || 'null');
+  const checkin = JSON.parse(localStorage.getItem('carda_checkin') || 'null');
+
+  const proteinLogged = protein ? protein.logged : 68;
+  const proteinGoal   = protein ? protein.goal : 100;
+  const glasses       = hydration ? hydration.glasses : 0;
+  const thriveRaw     = computeThrive(checkin, protein);
+
+  // Icon + headline + body based on day quality
+  const hasHighHunger = hungerScore >= 7;
+  const hasFoodNoise  = foodNoise.length > 0 && !foodNoise.includes('None today');
+  const hitProtein    = proteinLogged >= proteinGoal;
+
+  let iconBg, iconSvg, headline, body;
+
+  if (hitProtein && !hasHighHunger && !hasFoodNoise) {
+    iconBg = '#D8E73C';
+    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><polyline points="20 6 9 17 4 12"/></svg>`;
+    headline = 'Strong day, Bexli.';
+    body = 'Protein floor hit, hunger in check. You gave your body what it needed today.';
+  } else if (hasHighHunger) {
+    iconBg = 'rgba(199,185,255,0.4)';
+    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    headline = 'Hunger was high tonight.';
+    body = 'That\'s worth paying attention to. Cardi can help you think through tomorrow\'s fueling timing.';
+  } else if (hasFoodNoise) {
+    iconBg = 'rgba(199,185,255,0.4)';
+    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
+    headline = 'You noticed the food noise.';
+    body = 'That awareness is the first step. Cardi has thoughts on what was behind it today.';
+  } else {
+    iconBg = '#97DDF7';
+    iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
+    headline = 'Good close to Day 14.';
+    body = 'You reflected, you checked in. That consistency compounds. Cardi\'s ready when you are.';
+  }
+
+  const icon = document.getElementById('completion-icon');
+  icon.style.background = iconBg;
+  icon.innerHTML = iconSvg;
+  document.getElementById('completion-headline').textContent = headline;
+  document.getElementById('completion-body').textContent = body;
+
+}
+
+function computeThrive(checkin, protein) {
+  const severityPts = { good: 30, watch: 22, moderate: 15, high: 8 };
+  let raw = 0;
+  if (checkin) raw += severityPts[checkin.severity] || 0;
+  if (protein) {
+    if (protein.logged >= protein.goal) raw += 35;
+    else if (protein.logged > 0) raw += 15;
+  }
+  return raw === 0 ? 0 : Math.round((raw / 65) * 100);
+}
+
+function saveThenDone() {
+  localStorage.setItem('carda_evening', JSON.stringify({
+    gratitude: gratitudeText,
+    hungerScore,
+    foodNoise,
+    sleepChecks,
+    completedAt: new Date().toISOString()
+  }));
+  window.location.href = 'coach.html';
+}
+
+// Init
+document.getElementById('next-btn').disabled = true;
+
+// Step 3 → 4 transition needs completion render
+const origGoToStep = goToStep;
+function goToStep(n) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  currentStep = n;
+  if (n === 4) renderCompletion();
+  document.getElementById('step-' + currentStep).classList.add('active');
+  updateHeader();
+  updateProgress();
+  updateBtn();
+  document.querySelector('.scroll-area').scrollTop = 0;
+}
+</script>
+</body>
+</html>

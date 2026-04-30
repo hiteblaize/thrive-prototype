@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Live Session</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --c-error:        #c0392b;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast:       140ms;
+  --dur-base:       240ms;
+}
+
+html, body {
+  background: #0a0a0a;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: #0f1409;
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.60), 0 0 0 1px rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── Status bar ── */
+.status-bar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  z-index: 20;
+}
+.status-time {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-white);
+  letter-spacing: -0.01em;
+}
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+/* ── Coach video backdrop ── */
+.coach-feed {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.coach-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+/* Gradient overlays */
+.coach-feed::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(0,0,0,0.52) 0%,
+    rgba(0,0,0,0.0) 40%,
+    rgba(0,0,0,0.0) 60%,
+    rgba(0,0,0,0.55) 100%);
+  z-index: 2;
+}
+
+/* ── Live indicator ── */
+.live-badge {
+  position: absolute;
+  top: 64px;
+  left: 20px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 9999px;
+  padding: 5px 12px 5px 8px;
+  backdrop-filter: blur(6px);
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-citrus);
+  flex-shrink: 0;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.live-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-white);
+}
+
+/* ── Session timer ── */
+.session-timer {
+  position: absolute;
+  top: 64px;
+  right: 20px;
+  z-index: 10;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 9999px;
+  padding: 5px 14px;
+  backdrop-filter: blur(6px);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--c-white);
+}
+
+/* ── Exit button ── */
+.exit-btn {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.40);
+  border: 1.5px solid rgba(255,255,255,0.30);
+  border-radius: 9999px;
+  padding: 8px 16px;
+  backdrop-filter: blur(6px);
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--c-white);
+  cursor: pointer;
+  text-decoration: none;
+}
+.exit-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Self-view thumbnail ── */
+.self-view {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.25);
+  background: #1a2a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.self-view-label {
+  position: absolute;
+  bottom: 4px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.70);
+  text-transform: uppercase;
+}
+
+/* ── Vitals area ── */
+.vitals-area {
+  flex: 1;
+  background: #0f1409;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 20px 0;
+  gap: 0;
+}
+
+/* ── HR ring ── */
+.hr-ring-wrap {
+  position: relative;
+  width: 196px;
+  height: 196px;
+  margin-bottom: 4px;
+}
+.hr-ring-wrap svg {
+  width: 196px;
+  height: 196px;
+  transform: rotate(-90deg);
+}
+.hr-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.hr-bpm {
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 64px;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--c-white);
+}
+.hr-unit {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(255,255,255,0.40);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.hr-zone {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-plum);
+  margin-top: 4px;
+}
+
+.hr-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 16px;
+  letter-spacing: 0.01em;
+}
+.hr-label strong {
+  font-weight: 700;
+  color: var(--c-plum);
+}
+
+/* ── Surrounding stats ── */
+.stats-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+.stat-card {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 14px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.stat-card-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--c-white);
+}
+.stat-card-unit {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.stat-card-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.01em;
+  margin-top: 2px;
+}
+
+/* ── Exercise block timeline ── */
+.block-card {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.block-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--c-white);
+}
+.block-time-remaining {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--c-lime);
+}
+.block-track {
+  height: 6px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.block-fill {
+  height: 100%;
+  background: var(--c-lime);
+  border-radius: 9999px;
+  width: 62%;
+}
+.block-segments {
+  display: flex;
+  gap: 6px;
+}
+.block-seg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.block-seg-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.block-seg-icon svg { width: 14px; height: 14px; }
+.block-seg-label {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 10px;
+  color: rgba(255,255,255,0.40);
+  text-align: center;
+  line-height: 1.2;
+}
+.block-seg.active .block-seg-label { color: var(--c-lime); font-weight: 700; }
+.block-seg.done .block-seg-label { color: rgba(255,255,255,0.25); }
+
+/* ── Control bar ── */
+.control-bar {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 14px 20px 28px;
+  flex-shrink: 0;
+}
+.ctrl-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.ctrl-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.ctrl-icon svg { width: 20px; height: 20px; }
+.ctrl-icon.active {
+  background: var(--c-lime);
+  border-color: var(--c-lime);
+}
+.ctrl-icon.active svg { stroke: var(--c-dark-green); }
+.ctrl-icon.end {
+  background: var(--c-error);
+  border-color: var(--c-error);
+  width: 58px;
+  height: 58px;
+}
+.ctrl-icon.end svg { width: 22px; height: 22px; stroke: white; }
+.ctrl-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.45);
+}
+.ctrl-btn.end-btn .ctrl-label { color: rgba(255,255,255,0.55); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">2:07 PM</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/>
+        <rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/>
+        <rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/>
+        <rect x="13.5" y="0" width="3" height="12" rx="1"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+        <path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+      </svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/>
+        <rect x="2" y="2" width="16" height="8" rx="2" fill="white"/>
+        <path d="M23 4v4a2 2 0 0 0 0-4z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Coach video feed -->
+  <div class="coach-feed">
+    <img class="coach-photo"
+      src="/design-system/assets/coach-michelle.png"
+      alt="Coach Haley">
+
+    <!-- Live indicator -->
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      <span class="live-text">Live · Coach Haley</span>
+    </div>
+
+    <!-- Timer -->
+    <div class="session-timer">7:24</div>
+
+    <!-- Exit -->
+    <a href="preview.html" class="exit-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Exit session
+    </a>
+
+    <!-- Self-view -->
+    <div class="self-view">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5" stroke-linecap="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span class="self-view-label">You</span>
+    </div>
+  </div>
+
+  <!-- Vitals area -->
+  <div class="vitals-area">
+
+    <!-- Heart rate ring -->
+    <div class="hr-ring-wrap">
+      <svg viewBox="0 0 196 196" xmlns="http://www.w3.org/2000/svg">
+        <!-- Background track -->
+        <circle cx="98" cy="98" r="82"
+          fill="none"
+          stroke="rgba(255,255,255,0.07)"
+          stroke-width="12"/>
+        <!-- Progress arc — 74bpm, in range 65-85, mapped to ~80% of arc -->
+        <!-- circumference = 2π×82 = 515.2; fill = 515.2 × 0.80 = 412.2 -->
+        <circle cx="98" cy="98" r="82"
+          fill="none"
+          stroke="#C7B9FF"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-dasharray="412.2 515.2"/>
+        <!-- Subtle glow layer -->
+        <circle cx="98" cy="98" r="82"
+          fill="none"
+          stroke="#C7B9FF"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-dasharray="412.2 515.2"
+          opacity="0.25"/>
+      </svg>
+      <div class="hr-ring-center">
+        <div class="hr-bpm">74</div>
+        <div class="hr-unit">BPM</div>
+        <div class="hr-zone">In target zone</div>
+      </div>
+    </div>
+
+    <div class="hr-label">Heart rate · <strong>target 65–85 bpm</strong></div>
+
+    <!-- Surrounding stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card-value" style="color:var(--c-sky);">97</div>
+        <div class="stat-card-unit">%</div>
+        <div class="stat-card-label">SpO2</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value" style="color:var(--c-lime);">4.2</div>
+        <div class="stat-card-unit">METs</div>
+        <div class="stat-card-label">Intensity</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-value" style="color:var(--c-citrus);">186</div>
+        <div class="stat-card-unit">kcal</div>
+        <div class="stat-card-label">Burned</div>
+      </div>
+    </div>
+
+    <!-- Exercise block -->
+    <div class="block-card">
+      <div class="block-header">
+        <div class="block-name">Resistance Block 2 of 3</div>
+        <div class="block-time-remaining">4:12 left</div>
+      </div>
+      <div class="block-track">
+        <div class="block-fill"></div>
+      </div>
+      <div class="block-segments">
+
+        <!-- Warm-up: done -->
+        <div class="block-seg done">
+          <div class="block-seg-icon" style="background:rgba(255,255,255,0.06);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+          </div>
+          <div class="block-seg-label">Warm-up</div>
+        </div>
+
+        <!-- Block 1: done -->
+        <div class="block-seg done">
+          <div class="block-seg-icon" style="background:rgba(255,255,255,0.06);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="10" width="4" height="4" rx="1"/>
+              <rect x="18" y="10" width="4" height="4" rx="1"/>
+              <rect x="5" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="16" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="8" y="11" width="8" height="2" rx="1"/>
+            </svg>
+          </div>
+          <div class="block-seg-label">Block 1</div>
+        </div>
+
+        <!-- Block 2: active -->
+        <div class="block-seg active">
+          <div class="block-seg-icon" style="background:rgba(216,231,60,0.15); border:1px solid rgba(216,231,60,0.30);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#D8E73C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="10" width="4" height="4" rx="1"/>
+              <rect x="18" y="10" width="4" height="4" rx="1"/>
+              <rect x="5" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="16" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="8" y="11" width="8" height="2" rx="1"/>
+            </svg>
+          </div>
+          <div class="block-seg-label">Block 2</div>
+        </div>
+
+        <!-- Block 3: upcoming -->
+        <div class="block-seg">
+          <div class="block-seg-icon" style="background:rgba(255,255,255,0.04);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="10" width="4" height="4" rx="1"/>
+              <rect x="18" y="10" width="4" height="4" rx="1"/>
+              <rect x="5" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="16" y="8" width="3" height="8" rx="1.5"/>
+              <rect x="8" y="11" width="8" height="2" rx="1"/>
+            </svg>
+          </div>
+          <div class="block-seg-label">Block 3</div>
+        </div>
+
+        <!-- Cool-down: upcoming -->
+        <div class="block-seg">
+          <div class="block-seg-icon" style="background:rgba(255,255,255,0.04);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <div class="block-seg-label">Cool-down</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Control bar -->
+  <div class="control-bar">
+
+    <div class="ctrl-btn">
+      <div class="ctrl-icon active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </div>
+      <span class="ctrl-label">Mic on</span>
+    </div>
+
+    <div class="ctrl-btn">
+      <div class="ctrl-icon active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#142E0F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      </div>
+      <span class="ctrl-label">Video on</span>
+    </div>
+
+    <div class="ctrl-btn end-btn">
+      <div class="ctrl-icon end">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07C9.44 17.43 7.62 15.67 6.06 13.65A19.67 19.67 0 0 1 3 5.13 2 2 0 0 1 4.11 3.4 12.84 12.84 0 0 0 4.81.6a2 2 0 0 1 2-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.45 2.11l-1.27 1.27a16 16 0 0 0 .88 8.08z"/>
+        </svg>
+      </div>
+      <span class="ctrl-label">End</span>
+    </div>
+
+    <div class="ctrl-btn">
+      <div class="ctrl-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <span class="ctrl-label">Chat</span>
+    </div>
+
+    <div class="ctrl-btn">
+      <div class="ctrl-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+      </div>
+      <span class="ctrl-label">More</span>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+localStorage.setItem('carda_exercise', JSON.stringify({ completed: true, completedAt: new Date().toISOString() }));
+document.querySelector('.ctrl-btn.end-btn').addEventListener('click', () => { window.location.href = 'preview.html'; });
+</script>
+</body>
+</html>

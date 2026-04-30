@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Carda — Deck Templates</title>
+<link rel="stylesheet" href="../colors_and_type.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: #2a2a2a; font-family: "Circular Std", system-ui, sans-serif; }
+  .board { padding: 40px 40px 80px; display: flex; flex-direction: column; gap: 40px; align-items: center; }
+  .board-title { color: #F4F0EB; font-family: "ABC Marist", Georgia, serif; font-size: 20px; align-self: flex-start; padding-left: 16px; letter-spacing: -0.01em; }
+  .board-title span { opacity: 0.5; font-family: "Circular Std", sans-serif; font-weight: 500; font-size: 13px; margin-left: 12px; }
+  .frame-wrap { width: 960px; height: 540px; position: relative; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.4); border-radius: 4px; }
+  .frame { position: absolute; top: 0; left: 0; width: 1920px; height: 1080px; transform: scale(0.5); transform-origin: 0 0; overflow: hidden; }
+
+  /* Common slide chrome */
+  .pg-header {
+    position: absolute; left: 58px; top: 32px;
+    font-family: "Circular Std"; font-weight: 500; font-size: 14px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .pg-header .dot { width: 4px; height: 4px; border-radius: 999px; background: currentColor; opacity: 0.5; }
+  .pg-footer {
+    position: absolute; left: 58px; bottom: 32px;
+    font-family: "Circular Std"; font-weight: 500; font-size: 14px;
+    letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6;
+  }
+  .pg-num {
+    position: absolute; right: 58px; bottom: 32px;
+    font-family: "Circular Std"; font-weight: 500; font-size: 14px;
+    letter-spacing: 0.04em; opacity: 0.6;
+  }
+  .logo-wm { position: absolute; left: 58px; top: 55px; width: 260px; }
+
+  /* Blob shape */
+  .blob {
+    position: absolute;
+    width: 1296px; height: 1400px;
+    background: #D8E73C;
+    border-radius: 48% 52% 60% 40% / 55% 45% 50% 50%;
+  }
+
+  /* -------- Cover -------- */
+  .cover { background: #142E0F; color: #F4F0EB; }
+  .cover .blob { right: -340px; top: -280px; transform: rotate(-6deg); }
+  .cover .brand-guide {
+    position: absolute; left: 58px; top: 160px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 32px;
+    color: #fff;
+  }
+  .cover .title {
+    position: absolute; left: 58px; bottom: 120px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 180px;
+    line-height: 0.92; letter-spacing: -0.03em; color: #fff;
+    max-width: 1200px;
+  }
+  .cover .title em { font-style: normal; color: #D8E73C; }
+
+  /* -------- Section divider -------- */
+  .section { background: #FB6E28; color: #F4F0EB; }
+  .section .eyebrow {
+    position: absolute; left: 58px; top: 52px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 72px;
+    line-height: 1; letter-spacing: -0.02em; color: #F4F0EB;
+    max-width: 500px;
+  }
+  .section .idx {
+    position: absolute; right: 58px; top: 52px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 72px;
+    color: #F4F0EB; opacity: 0.4;
+  }
+  .section .big {
+    position: absolute; left: 58px; bottom: 80px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 260px;
+    line-height: 0.88; letter-spacing: -0.03em; color: #F4F0EB;
+  }
+  .section .big span { color: #142E0F; }
+
+  /* -------- Statement -------- */
+  .stmt { background: #F4F0EB; color: #142E0F; }
+  .stmt .pg-header, .stmt .pg-footer, .stmt .pg-num { color: #142E0F; }
+  .stmt .quote-mark {
+    position: absolute; left: 58px; top: 160px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 400px;
+    line-height: 1; color: #D8E73C;
+  }
+  .stmt .body {
+    position: absolute; left: 280px; top: 240px; right: 140px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600;
+    font-size: 88px; line-height: 1.05; letter-spacing: -0.02em;
+    color: #142E0F;
+  }
+  .stmt .attr {
+    position: absolute; left: 280px; bottom: 120px;
+    font-family: "Circular Std"; font-weight: 700; font-size: 22px;
+    letter-spacing: 0.04em; text-transform: uppercase; color: #142E0F;
+  }
+  .stmt .attr .role { font-weight: 500; opacity: 0.6; display: block; margin-top: 8px; letter-spacing: 0.08em; }
+
+  /* -------- Content -------- */
+  .content { background: #F4F0EB; color: #142E0F; }
+  .content .pg-header, .content .pg-footer, .content .pg-num { color: #142E0F; }
+  .content .title {
+    position: absolute; left: 58px; top: 120px;
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 96px;
+    line-height: 1; letter-spacing: -0.02em; color: #142E0F;
+    max-width: 900px;
+  }
+  .content .lede {
+    position: absolute; left: 58px; top: 380px; width: 560px;
+    font-family: "Circular Std"; font-weight: 400; font-size: 22px;
+    line-height: 1.45; color: #142E0F;
+  }
+  .content .lede strong { font-weight: 700; }
+  .content .cards {
+    position: absolute; right: 58px; top: 200px; width: 1100px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  .content .card {
+    background: #fff;
+    border: 1px solid rgba(20,46,15,0.08);
+    border-radius: 32px;
+    padding: 40px;
+    height: 340px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .content .card .num {
+    font-family: "ABC Marist", Georgia, serif; font-weight: 600; font-size: 88px;
+    line-height: 1; color: #D8E73C; -webkit-text-stroke: 1px #142E0F;
+  }
+  .content .card h3 {
+    margin: 0; font-family: "ABC Marist", Georgia, serif; font-weight: 600;
+    font-size: 36px; line-height: 1.05; letter-spacing: -0.01em; color: #142E0F;
+  }
+  .content .card p {
+    margin: 16px 0 0; font-family: "Circular Std"; font-weight: 400;
+    font-size: 18px; line-height: 1.45; color: #142E0F;
+  }
+  .content .card.accent-sky { background: #97DDF7; }
+  .content .card.accent-plum { background: #C7B9FF; }
+  .content .card.accent-lime { background: #D8E73C; }
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <!-- ========== COVER ========== -->
+  <div class="board-title">01 &nbsp;Cover <span>Dark green · lime blob · ABC Marist display</span></div>
+  <div class="frame-wrap"><div class="frame cover">
+    <div class="blob"></div>
+    <div style="position:absolute;left:58px;top:55px;font-family:'ABC Marist',serif;font-weight:600;font-size:28px;color:#fff;">Carda <span style="opacity:0.7;font-weight:500;">Health</span></div>
+    <div class="brand-guide">Brand Guide</div>
+    <div class="title">Helping<br/>hearts <em>heal</em>,<br/>at home.</div>
+    <div class="pg-footer" style="color:#F4F0EB;">Carda Health &nbsp;·&nbsp; 2025</div>
+    <div class="pg-num" style="color:#F4F0EB;">000</div>
+  </div></div>
+
+  <!-- ========== SECTION DIVIDER ========== -->
+  <div class="board-title">02 &nbsp;Section Divider <span>Citrus field · oversized numeral · short eyebrow</span></div>
+  <div class="frame-wrap"><div class="frame section">
+    <div class="eyebrow">Verbal<br/>Identity</div>
+    <div class="idx">100</div>
+    <div class="big">1<span>00</span></div>
+    <div class="pg-footer">Section 01 &nbsp;·&nbsp; Verbal Identity</div>
+  </div></div>
+
+  <!-- ========== STATEMENT ========== -->
+  <div class="board-title">03 &nbsp;Statement <span>Natural cream · lime quote mark · Marist pull quote</span></div>
+  <div class="frame-wrap"><div class="frame stmt">
+    <div class="pg-header">
+      <span>Brand</span><span class="dot"></span><span>Voice &amp; Tone</span>
+    </div>
+    <div class="quote-mark">"</div>
+    <div class="body">This weekend I was able to go to the baseball game with my grandson &mdash; and walk around for the first time in a very long time.</div>
+    <div class="attr">
+      Marilyn, 68
+      <span class="role">Carda Patient · Week 9</span>
+    </div>
+    <div class="pg-footer">Carda Health &nbsp;·&nbsp; Brand Guide</div>
+    <div class="pg-num">312</div>
+  </div></div>
+
+  <!-- ========== CONTENT ========== -->
+  <div class="board-title">04 &nbsp;Content <span>Natural cream · title left · accent cards right</span></div>
+  <div class="frame-wrap"><div class="frame content">
+    <div class="pg-header">
+      <span>Program</span><span class="dot"></span><span>How it works</span>
+    </div>
+    <div class="title">How a&nbsp;Carda<br/>week feels.</div>
+    <div class="lede">
+      <strong>Three supervised sessions, two independent check-ins.</strong> Patients meet their
+      clinical team 2&ndash;3&times; a week for 30&ndash;60 minute live sessions covering
+      exercise, nutrition, mindfulness and stress management &mdash; on the tablet we ship
+      on day one.
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="num">01</div>
+        <div>
+          <h3>Live workout</h3>
+          <p>Supervised cardio &amp; strength, guided by a clinical exercise physiologist over video.</p>
+        </div>
+      </div>
+      <div class="card accent-sky">
+        <div class="num">02</div>
+        <div>
+          <h3>Auto&#8209;vitals</h3>
+          <p>BP cuff &amp; pulse-ox stream into the session &mdash; no tapping, no typing.</p>
+        </div>
+      </div>
+      <div class="card accent-plum">
+        <div class="num">03</div>
+        <div>
+          <h3>Daily check-in</h3>
+          <p>Five questions on sleep, mood &amp; symptoms. Takes under a minute.</p>
+        </div>
+      </div>
+      <div class="card accent-lime">
+        <div class="num">04</div>
+        <div>
+          <h3>Weekly review</h3>
+          <p>Progress notes from your team, delivered every Friday. Tangible wins, not vanity metrics.</p>
+        </div>
+      </div>
+    </div>
+    <div class="pg-footer">Carda Health &nbsp;·&nbsp; Brand Guide</div>
+    <div class="pg-num">204</div>
+  </div></div>
+
+</div>
+
+</body>
+</html>

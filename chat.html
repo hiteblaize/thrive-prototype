@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1">
+<title>Carda Health — Chat</title>
+<style>
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Book.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Medium.otf") format("opentype");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Circular Std";
+  src: url("design-system/fonts/CircularStd-Black.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "ABC Marist";
+  src: url("design-system/fonts/ABCMarist-SemiBold.otf") format("opentype");
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-dark-green:   #142E0F;
+  --c-lime:         #D8E73C;
+  --c-citrus:       #FB6E28;
+  --c-plum:         #C7B9FF;
+  --c-sky:          #97DDF7;
+  --c-natural:      #F4F0EB;
+  --c-dg-08:        rgba(20,46,15,0.08);
+  --c-dg-30:        rgba(20,46,15,0.30);
+  --c-dg-60:        rgba(20,46,15,0.60);
+  --c-white:        #FFFFFF;
+  --font-display:   "ABC Marist", Georgia, serif;
+  --font-sans:      "Circular Std", -apple-system, BlinkMacSystemFont, sans-serif;
+  --sh-card:        0 4px 8px rgba(0,0,0,0.12);
+  --ease-out:       cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html, body {
+  background: #f0ede8;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0 48px;
+}
+
+.phone {
+  width: 390px;
+  min-height: 844px;
+  background: var(--c-natural);
+  border-radius: 48px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.status-bar {
+  background: var(--c-dark-green);
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 28px 8px;
+  flex-shrink: 0;
+}
+.status-time { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--c-white); letter-spacing: -0.01em; }
+.status-icons { display: flex; align-items: center; gap: 6px; }
+
+.app-header {
+  background: var(--c-dark-green);
+  padding: 18px 24px 22px;
+  flex-shrink: 0;
+}
+.header-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  color: var(--c-white);
+}
+
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 80px;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+.thread-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.thread-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--c-dg-08);
+  background: var(--c-natural);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms;
+}
+.thread-row:active { background: rgba(20,46,15,0.04); }
+
+.thread-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+}
+.thread-avatar.cardi {
+  background: rgba(199,185,255,0.20);
+  border: 1.5px solid rgba(199,185,255,0.35);
+}
+.thread-avatar.haley {
+  background: rgba(151,221,247,0.25);
+  border: 1.5px solid rgba(151,221,247,0.40);
+  color: var(--c-dark-green);
+}
+.thread-avatar.maya {
+  background: rgba(251,110,40,0.12);
+  border: 1.5px solid rgba(251,110,40,0.25);
+  color: var(--c-dark-green);
+}
+
+.thread-body { flex: 1; min-width: 0; }
+.thread-name {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--c-dark-green);
+  margin-bottom: 1px;
+}
+.thread-role {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--c-dg-30);
+  margin-bottom: 5px;
+  letter-spacing: 0.01em;
+}
+.thread-preview {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--c-dg-60);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.thread-preview.unread {
+  font-weight: 600;
+  color: var(--c-dark-green);
+}
+
+.thread-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.thread-time {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--c-dg-30);
+}
+.thread-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: var(--c-citrus);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--c-white);
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: var(--c-dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px 12px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; flex: 1; padding-top: 8px; cursor: pointer;
+  opacity: 0.45; transition: opacity 140ms; text-decoration: none;
+}
+.nav-item.active { opacity: 1; }
+.nav-item:hover { opacity: 0.75; }
+.nav-item.active:hover { opacity: 1; }
+.nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+.nav-dot { position: absolute; bottom: -3px; width: 5px; height: 5px; border-radius: 50%; background: var(--c-lime); }
+.nav-label { font-family: var(--font-sans); font-weight: 500; font-size: 10px; letter-spacing: 0.02em; color: var(--c-white); }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white"><rect x="0" y="6" width="3" height="6" rx="1" opacity="0.4"/><rect x="4.5" y="4" width="3" height="8" rx="1" opacity="0.6"/><rect x="9" y="2" width="3" height="10" rx="1" opacity="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white"><path d="M8 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M4.5 7.1A4.9 4.9 0 0 1 8 5.8c1.36 0 2.6.53 3.5 1.4" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M1.5 4.3A8.4 8.4 0 0 1 8 2c2.5 0 4.7 1.03 6.3 2.7" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/></svg>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="white"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="white" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="16" height="8" rx="2" fill="white"/><path d="M23 4v4a2 2 0 0 0 0-4z"/></svg>
+    </div>
+  </div>
+
+  <div class="app-header">
+    <div class="header-title">Chat</div>
+  </div>
+
+  <div class="scroll-area">
+    <div class="thread-list">
+
+      <!-- Cardi -->
+      <a href="coach.html" class="thread-row">
+        <div class="thread-avatar cardi">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C7B9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3C8 3 5 6 5 10c0 2.5 1.2 4.7 3 6.1V18h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z"/>
+            <path d="M9 18v1a3 3 0 0 0 6 0v-1"/>
+          </svg>
+        </div>
+        <div class="thread-body">
+          <div class="thread-name">Cardi</div>
+          <div class="thread-role">AI Coach · always available</div>
+          <div class="thread-preview">Morning. How's the food noise today compared to last night?</div>
+        </div>
+        <div class="thread-meta">
+          <div class="thread-time">9:41 AM</div>
+        </div>
+      </a>
+
+      <!-- Coach Haley -->
+      <a href="haley.html" class="thread-row">
+        <div class="thread-avatar haley">HL</div>
+        <div class="thread-body">
+          <div class="thread-name">Coach Haley</div>
+          <div class="thread-role">Exercise Coach</div>
+          <div class="thread-preview unread">Saw your check-in — still good for 2pm today?</div>
+        </div>
+        <div class="thread-meta">
+          <div class="thread-time">9:38 AM</div>
+          <div class="thread-badge">1</div>
+        </div>
+      </a>
+
+      <!-- Coach Maya -->
+      <a href="maya.html" class="thread-row">
+        <div class="thread-avatar maya">MC</div>
+        <div class="thread-body">
+          <div class="thread-name">Coach Maya</div>
+          <div class="thread-role">Lifestyle Coach</div>
+          <div class="thread-preview">Great session yesterday. See you at 3pm today 🌿</div>
+        </div>
+        <div class="thread-meta">
+          <div class="thread-time">Yesterday</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="preview.html" class="nav-item" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="none"/>
+          <polyline points="9,22 9,12 15,12 15,22"/>
+        </svg>
+      </div>
+      <span class="nav-label">Home</span>
+    </a>
+    <div class="nav-item active">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <div class="nav-dot"></div>
+      </div>
+      <span class="nav-label">Chat</span>
+    </div>
+    <a href="progress.html" class="nav-item" style="text-decoration:none;">
+      <div class="nav-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+          <line x1="18" y1="20" x2="18" y2="10"/>
+          <line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </div>
+      <span class="nav-label">Progress</span>
+    </a>
+  </nav>
+
+</div>
+</body>
+</html>

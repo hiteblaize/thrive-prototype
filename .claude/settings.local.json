@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -fsSL https://bun.sh/install)",
+      "Bash(bash)",
+      "Read(//Users/blaize/.claude/skills/gstack/**)",
+      "Bash(~/.bun/bin/bun --version)",
+      "Bash(./setup)",
+      "Read(//Users/blaize/.claude/**)",
+      "Bash(unzip -l \"/Users/blaize/Downloads/Carda Health Design System.zip\")",
+      "Bash(unzip -o \"/Users/blaize/Downloads/Carda Health Design System.zip\" -d \"/Users/blaize/Documents/Code/business_experiment1/design-system\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(grep -v \"svg\\\\|path\\\\|rect\\\\|circle\\\\|class=\\\\|id=\\\\|style=\\\\|<!--\\\\|^\\\\s*$\")",
+      "Bash(grep -v \"svg\\\\|path\\\\|rect\\\\|circle\\\\|class=\\\\|id=\\\\|style=\\\\|<!--\\\\|script\\\\|^\\\\s*$\")",
+      "Bash(npx puppeteer *)",
+      "Bash(python3 -c \"import playwright\")",
+      "Bash(npm install *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git config *)",
+      "Bash(git push *)"
+    ]
+  }
+}
